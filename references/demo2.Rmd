@@ -1,0 +1,70 @@
+---
+title: 'R Markdown Demo 2'
+author: "Your Name Goes Here"
+fontsize: 12pt
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+  word_document: default
+header-includes: \usepackage{pdfpages}
+geometry: margin=0.75in
+fig_crop: no
+---
+
+## Inline Math Symbols & Expressions (\LaTeX)
+
+R Markdown supports \LaTeX  math symbols & expressions.
+Inline math symbols & expressions are placed between `$ ... $`.
+
+You can write Greek letters: $\alpha$, $\beta$, $\gamma$, $\delta$, 
+$\epsilon$, $\varepsilon$ ...
+
+**Subscripts** are written as $a_b$ and **superscripts** as $a^b$.
+
+Simple Linear Regression Model: $Y_{ij}=\beta_0+\beta_1 X +\varepsilon_{ij}$
+
+## Display Math Mode
+
+Place **two dollar signs** around math expressions in **display mode** like `$$... $$`
+
+
+**Fractions** in **inline** math mode: $\frac{a}{b}$ and 
+in  **display** math mode: $$\frac{a}{b}$$
+
+Logistic Regression Model:
+$$
+P(Y=1) = \frac{e^{\alpha+\beta x}}{1+e^{\alpha+\beta x}}
+$$
+
+## Log, Exp, Square-root, and Summation
+
+
+$\log(x)$, $\exp(x)$, $\sqrt{x}$, $\sum_{i=1}^{n}x_i$
+
+
+Be sure to place the black-slash `\`, or they would look like
+
+**Knitted Output:**
+
+$log(x)$, $exp(x)$, $sqrt{x}$, $sum_{i=1}^{n}x_i$
+
+
+## A \LaTeX  Tutorial
+
+`https://www.overleaf.com/learn/latex/Learn_LaTeX_in_30_minutes`
+
+You can just look at the section "Adding math to \LaTeX" and 
+all the sub-sections underneath.
+
+* Mathematical expressions
+* Subscripts and superscripts
+* Brackets and Parentheses
+* Fractions and Binomials
+* Aligning Equations
+* Operators
+* Spacing in math mode
+* Integrals, sums and limits
+* Display style in math mode
+* List of Greek letters and math symbols
+* Mathematical fonts

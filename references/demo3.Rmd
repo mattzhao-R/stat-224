@@ -1,0 +1,61 @@
+---
+title: 'R Markdown Demo 3'
+author: "Your Name Goes Here"
+fontsize: 12pt
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+  word_document: default
+header-includes: \usepackage{pdfpages}
+geometry: margin=0.75in
+fig_crop: no
+---
+
+## Iris Data
+
+```{r}
+data(iris)
+str(iris)
+```
+
+## R Plot
+
+You might notice that my plots get cropped.
+
+```{r}
+library(ggplot2)
+ggplot(iris, aes(x=Petal.Width, y=Petal.Length))+
+  geom_point()
+```
+
+## Adjust Size of R Plots
+
+Here, you can resize your plots by adjusting `fig.width` 
+and `fig.height` in the code chunk.
+
+```{r fig.width=3, fig.height=2.5, out.width='50%'}
+ggplot(iris, aes(x=Petal.Width, y=Petal.Length))+
+  geom_point()
+```
+
+## Center, Right-justify, or Left-justify R Plots
+
+```{r fig.width=3, fig.height=2.5, out.width='50%', fig.align='center'}
+ggplot(iris, aes(x=Petal.Width, y=Petal.Length))+
+  geom_point()
+```
+
+```{r fig.width=3, fig.height=2.5, out.width='50%', fig.align='right'}
+ggplot(iris, aes(x=Petal.Width, y=Petal.Length))+
+  geom_point()
+```
+
+## Two plots placed side-by-side
+
+```{r echo=TRUE, fig.width=4, fig.height=4, fig.show='hold', out.width=c('45%', '45%')}
+hist(iris$Petal.Length, nclass = 20)
+plot(iris$Petal.Width, iris$Petal.Length)
+```
+
+

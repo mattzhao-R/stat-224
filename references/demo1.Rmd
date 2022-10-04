@@ -1,0 +1,108 @@
+---
+title: 'R Markdown Demo 1'
+author: "Your Name Goes Here"
+fontsize: 12pt
+output:
+  pdf_document: default
+  html_document:
+  word_document: default
+header-includes: \usepackage{pdfpages}
+geometry: margin=0.75in
+fig_crop: no
+---
+
+
+This is an R Markdown document. 
+For HW, we strongly recommend you "Knit" to PDF (not Word, not HTML).
+
+The following is just a template.   
+It's not related to any specific HW assignment
+
+# Q1
+This is question 1,
+
+## Q1a
+which has a part (a)
+
+## Q1b
+then part (b)
+
+## Q1c
+and finally part (c)
+
+# Q2
+the next question is 2.
+
+## Q2a
+It only has a part (a)
+
+## Q2b
+and a part (b).
+
+# Q3
+
+Now, I'm just going to do a bunch of stuff in R Markdown that you
+can use for ideas for formatting your work.
+
+## Q3a
+Some of this I borrowed from the R Markdown (by RStudio) tutorial:   
+[http://rmarkdown.rstudio.com/lesson-1.html](http://rmarkdown.rstudio.com/lesson-1.html).
+
+## Q3b
+End a line with two spaces  
+to start a new line. Plus, these two -- words are separated by a long dash.
+
+Here is the start of the next paragraph where
+**this text is bold,** whereas *this text is in italics*.
+You can even ~~strikethrough text~~, although I can't think why you would need to.
+
+> A long quote starts with a greater than sign and gets indented on both sides.  Well, only until you hit return to start a new line.  I think I'll just repeat that to demonstrate a long quote.  A long quote starts with a greater than sign and gets indented on both sides.  Well, only until you hit return to start a new line.
+
+Finally, the quote is finished!
+
+# Q4
+
+## Q4a
+Here is an **itemized list**.
+Leave a blank line before the list.
+Indent using at least 4 spaces.
+
+* item 1
+* item 2
+    + sub-item 1
+    + sub-item 2
+* item 3
+    + sub-item 1
+    
+## Q4b
+
+Here is an **ordered list**.
+Leave a blank line before the list.
+Indent using at least 4 spaces.
+
+1. item 1
+2. item 2
+    a. sub-item 1
+    a. sub-item 2
+5. item 3
+    a. sub-item 1
+    
+## Table
+
+Table Header  | Second Header
+------------- | --------
+Table Cell 1  | Cell 2
+Cell 3        | Cell 4, aaaaaaaaaaaaaaa
+
+
+You can center, right-, or left-justify  text in your tables as you like.
+
+**Knitted Output:**
+
+Centered | Right-Justified | Left-Justified
+:-------:|----------------:|:----------------
+A        | 24              |  My Friend's Name
+B        |  5              |  My Name
+CC       | 167             |  Firstname Lastname
+DDD      | 48              |  Another Name
+

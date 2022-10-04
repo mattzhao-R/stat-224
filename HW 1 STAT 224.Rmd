@@ -19,7 +19,7 @@ library(mosaic)
 ```
 
 ```{r}
-NLSY = readtable("http://www.stat.uchicago.edu/~yibi/s224/data/NLSY.txt", header=T)
+NLSY = read.table("http://www.stat.uchicago.edu/~yibi/s224/data/NLSY.txt", header=T)
 ```
 
 ```{r, message=FALSE}
@@ -28,28 +28,132 @@ library(mosaic)
 
 # Q1
 
+```{r fig.width=3, fig.height=2.5, out.width='50%'}
+library(ggplot2)
+ggplot(data = NLSY, aes(x=Edu2006)) + 
+  geom_histogram(binwidth = 1) + 
+  xlab('Years of Education')
+```
 
+The location of the modes is due to how to the education system in the US works, specifically the divisions between 1-12 (elementary, middle, and high school), 13-16 (college), and beyond. Since education before college is provided to all Americans, vast majority can at least complete up to 12 years, hence the large peak at 12. Then, some portion can afford college (but not all complete it), explaining the peak at 16. Finally, there are also many 2-3 year programs e.g. MBA, MA/MS, JD, etc explaining the small peak after. The ideal bin size here is around 1. 
 
 # Q2
 
+```{r fig.width=3, fig.height=1, out.width='70%'}
+ggplot(data = NLSY, aes(x=Edu2006)) + 
+  geom_boxplot() + 
+  facet_wrap(~Gender) + 
+  xlab('Years of Education')
+```
+```{r}
+summary(NLSY$Edu2006)
+print(paste0('Standard Deviation: ', round(sd(NLSY$Edu2006),3)))
+```
 
+It appears that men and women have similar education levels. The boxplots are identical because the distribution of education is the same for both genders.
 
 # Q3
 
+```{r fig.width=2.5, fig.height=1.5, out.width='70%'}
+ggplot(data = NLSY, aes(x=Income2005)) + 
+  geom_boxplot() + 
+  facet_wrap(~Gender) + 
+  xlab('Income')
+ggplot(data = NLSY, aes(x=Income2005)) + 
+  geom_histogram(binwidth = 5) + 
+  facet_wrap(~Gender,ncol=1) + 
+  xlab('Income')
+```
 
+Both histograms are right-skewed and unimodal but the distribution of male income has greater variation (more spread out distribution) and a higher mean and median income as a result. 
 
 # Q4
 
+```{r fig.width=2.5, fig.height=1.5, out.width='70%'}
+ggplot(data = NLSY, aes(x=log(Income2005))) + 
+  geom_boxplot() + 
+  facet_wrap(~Gender) + 
+  xlab('Income')
+ggplot(data = NLSY, aes(x=log(Income2005))) + 
+  geom_histogram(binwidth = 0.25) + 
+  facet_wrap(~Gender,ncol=1) + 
+  xlab('Income')
+```
+
+After transformation, the distributions become roughly normal, with a slight left skew.
 
 
 # Q5
 
+```{r fig.width=8, fig.height=3, out.width='100%'}
+ggplot(data = NLSY, aes(x=log(Income2005))) + 
+  geom_boxplot() + 
+  facet_grid(Gender~Edu2006,scale='free_y') + 
+  xlab('Income')
+```
 
+Now we can see that, by comparing the top graphs with the bottom ones, men generally earn more than women with the same education level.
 
 # Q6
 
+## a)
+
+```{r fig.width=4, fig.height=3, out.width='80%'}
+ggplot(data = NLSY, aes(x=AFQT, y=Income2005)) + 
+  geom_point() + 
+  geom_smooth(method='lm') + 
+  xlab('AFQT Percentile Score') + ylab('Income')
+```
+
+Income appears to slightly increase with AFQT Percentile Score.
+
+## b)
+
+Variation in income increases with AFQT Percentile Score.
+
+## c)
+
+```{r fig.width=4, fig.height=3, out.width='80%'}
+ggplot(data = NLSY, aes(x=AFQT, y=log(Income2005))) + 
+  geom_point() + 
+  geom_smooth(method='lm') + 
+  xlab('AFQT Percentile Score') + ylab('log Income')
+```
+
+Variability in log income does not appear to change with AFQT.
 
 # Q7
 
+```{r fig.width=4, fig.height=3, out.width='70%'}
+ggplot(data = NLSY, aes(x=AFQT, y=log(Income2005), color = Gender)) + 
+  geom_point() + 
+  geom_smooth(method='lm') + 
+  xlab('AFQT Percentile Score') + ylab('log Income')
+ggplot(data = NLSY, aes(x=AFQT, y=log(Income2005))) + 
+  geom_point() + 
+  facet_wrap(~Gender)+
+  geom_smooth(method='lm') + 
+  xlab('AFQT Percentile Score') + ylab('log Income')
+
+```
+
+## a)
+
+For both genders, log income increases with AFQT Percentile Score and variability stays the same.
+
+## b)
+
+Men generally do earn more than women at each AFQT Percentile Score.
+
 
 # Q8
+
+```{r fig.width=4, fig.height=3, out.width='70%'}
+ggplot(data = NLSY, aes(x=AFQT, y=log(Income2005), color = Gender)) + 
+  geom_point() + 
+  facet_wrap(~Edu2006) +
+  geom_smooth(method='lm') + 
+  xlab('AFQT Percentile Score') + ylab('log Income')
+```
+
+While it is difficult for some education levels, on average, men generally earn more than women even if they have the same AFQT Percentile and education level. 

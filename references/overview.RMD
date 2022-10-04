@@ -1,0 +1,331 @@
+---
+title: |
+       | STAT 224 Intro to R Markdown
+author: "Yandi Shen"
+params:
+  dotabs: no
+output: 
+  beamer_presentation:
+    #theme: "metropolis"
+    keep_tex: true
+    highlight: "default"
+    includes:
+      in_header: "lec_style.tex"
+    slide_level: 2
+---
+
+```{r setup, echo = FALSE, include = FALSE}
+options(scipen=8, digits=4)
+knitr::opts_chunk$set(
+  size = 'small',
+  comment=NA,
+  collapse =TRUE
+)
+
+###########
+# improving ggplot2 appearance on a projector screen
+ggplot2::theme_set(ggplot2::theme_bw())
+ggplot2::theme_update(panel.grid.major = ggplot2::element_line(colour = "grey75"))
+```
+
+## 
+
+Please download the files below from Canvas
+
+* `LA0928_demo1.Rmd`
+* `LA0928_demo2.Rmd`
+* `LA0928_demo3.Rmd`
+
+## Itemized List
+
+\begin{flushright}
+\fbox{\begin{minipage}{0.6\textwidth}
+\begin{itemize}
+\itemsep=0pt
+\item Leave a blank line before the list
+\item Indent using at least 4 spaces
+\end{itemize}
+\end{minipage}}
+\end{flushright}
+
+\vspace{-40pt}
+R Markdown
+```
+* item 1
+* item 2
+    + sub-item 1
+    + sub-item 2
+* item 3
+    + sub-item 1
+```
+
+**Knitted Output:**
+
+* item 1
+* item 2
+    + sub-item 1
+    + sub-item 2
+* item 3
+    + sub-item 1
+
+## Ordered List
+
+\begin{flushright}
+\fbox{\begin{minipage}{0.6\textwidth}
+\begin{itemize}
+\itemsep=0pt
+\item Leave a blank line before the list
+\item Indent using at least 4 spaces
+\end{itemize}
+\end{minipage}}
+\end{flushright}
+
+\vspace{-40pt}
+**R Markdown:**
+```
+1. item 1
+2. item 2
+    a. sub-item 1
+    b. sub-item 2
+3. item 3
+    a. sub-item 1
+```
+
+Knitted Output
+
+1. item 1
+2. item 2
+    a. sub-item 1
+    b. sub-item 2
+3. item 3
+    a. sub-item 1
+
+## Bold-face, Italic, Striking Through Text
+
+**R Markdown:**
+
+```
+1. **This text is bold.** 
+1. *This text is in italics*.
+1. You can even ~~strikethrough text~~
+```
+
+**Knitted Output:** 
+
+1. **This text is bold.** 
+1. *This text is in italics*.
+1. You can even ~~strikethrough text~~
+
+## Header
+
+```
+# Header 1
+## Header 2
+### Header 3
+
+ordinary text
+```
+
+## Table
+
+**R Markdown:**
+
+```
+Table Header  | Second Header
+------------- | -------------
+Table Cell 1  | Cell 2
+Cell 3        | Cell 4
+```
+
+**Knitted Output:**
+
+Table Header  | Second Header
+------------- | -------------
+Table Cell 1  | Cell 2
+Cell 3        | Cell 4
+
+## 
+
+You can center, right-, or left-justify  text in your tables as you like.
+
+**R Markdown:**
+
+```
+Centered | Right-Justified | Left-Justified
+:-------:|----------------:|:----------------
+A        | 24              |  My Friend's Name
+B        |  5              |  My Name
+CC       | 167             |  Firstname Lastname
+DDD      | 48              |  Another Name
+```
+**Knitted Output:**
+
+Centered | Right-Justified | Left-Justified
+:-------:|----------------:|:----------------
+A        | 24              |  My Friend's Name
+B        |  5              |  My Name
+CC       | 167             |  Firstname Lastname
+DDD      | 48              |  Another Name
+
+
+## Inline Math Symbols & Expressions (\LaTeX)
+
+R Markdown supports \LaTeX  math symbols & expressions.
+Inline math symbols & expressions are placed between `$ ... $`.
+
+**R markdown:**
+
+```
+You can write Greek letters: $\alpha$, $\beta$, $\gamma$, $\delta$, 
+$\epsilon$, $\varepsilon$ ...
+
+**Subscripts** are written as $a_{b}$ and **superscripts** as $a^{b}$.
+
+Simple Linear Regression Model: $Y_{ij}=\beta_0+\beta_1 X +\varepsilon_{ij}$
+```
+
+**Knitted Output:**
+
+You can write Greek letters: $\alpha$, $\beta$, $\gamma$, $\delta$, 
+$\epsilon$, $\varepsilon$ ...
+
+**Subscripts** are written as $a_b$ and **superscripts** as $a^b$.
+
+Simple Linear Regression Model: $Y_{ij}=\beta_0+\beta_1 X +\varepsilon_{ij}$
+
+## 
+\small
+Place **two dollar signs** around math expressions in **display mode** like `$$... $$`
+
+**R Markdown**
+```
+**Fractions** in **inline** math mode: $\frac{a}{b}$ and 
+in  **display** math mode: $$\frac{a}{b}$$
+
+Logistic Regression Model:
+$$
+P(Y=1) = \frac{e^{\alpha+\beta x}}{1+e^{\alpha+\beta x}}
+$$
+```
+
+**Knitted Output:**
+
+**Fractions** in **inline** math mode: $\frac{a}{b}$ and 
+in  **display** math mode: $$\frac{a}{b}$$
+
+Logistic Regression Model:
+$$
+P(Y=1) = \frac{e^{\alpha+\beta x}}{1+e^{\alpha+\beta x}}
+$$
+
+## Log, Exp, Square-root, and Summation
+
+
+**R Markdown:**
+```
+$\log(x)$, $\exp(x)$, $\sqrt{x}$, $\sum_{i=1}^{n}x_i$
+```
+**Knitted Output:**
+
+$\log(x)$, $\exp(x)$, $\sqrt{x}$, $\sum_{i=1}^{n}x_i$
+
+
+Be sure to place the black-slash `\`, or they would look like
+
+**R Markdown:**
+```
+$log(x)$, $exp(x)$, $sqrt{x}$, $sum_{i=1}^{n}x_i$
+```
+**Knitted Output:**
+
+$log(x)$, $exp(x)$, $sqrt{x}$, $sum_{i=1}^{n}x_i$
+
+
+## A \LaTeX  Tutorial
+\small
+
+`https://www.overleaf.com/learn/latex/Learn_LaTeX_in_30_minutes`
+
+You can just look at the section "Adding math to \LaTeX" and 
+all the sub-sections underneath.
+
+* Mathematical expressions
+* Subscripts and superscripts
+* Brackets and Parentheses
+* Fractions and Binomials
+* Aligning Equations
+* Operators
+* Spacing in math mode
+* Integrals, sums and limits
+* Display style in math mode
+* List of Greek letters and math symbols
+* Mathematical fonts
+
+## R Code Chunks
+
+An R code chunk begin with 3 **back-tick** and then `{r}` and end with another
+3 **back-tick**
+
+```{r, results='asis', echo=FALSE}
+cat("`` ```{r}  ``")
+```
+
+\vspace{-12pt}
+```
+x = c(1,2,3,5)
+mean(x)
+```
+
+\vspace{-12pt}
+```{r, results='asis', echo=FALSE}
+cat("`` ```  ``")
+```
+
+\begin{center}
+\includegraphics[width=0.85\textwidth]{./figures0928/Keyboard_US_back_tick.jpg}
+\end{center}
+
+## 
+
+Use `echo=TRUE` or `echo=FALSE` to control whether to display the R codes.
+
+Use `eval=TRUE` or `eval=FALSE` to control whether to evaluate the code chunks.
+
+## The Iris Data
+
+```{r}
+data(iris)
+str(iris)
+```
+
+## R Plots
+
+```{r}
+library(ggplot2)
+ggplot(iris, aes(x=Petal.Width, y=Petal.Length))+
+  geom_point()
+```
+
+## How to Adjust Size of R Plots
+
+Adjust you can resize your plots by adjusting `fig.width` 
+and `fig.height` in the code chunk.
+
+Use `out.width` to adjust the relative width of the plot
+to the document
+
+See `LA0920_demo3.Rmd`.
+
+## Center, Left- or Right-Justify R Plots
+
+Use `fig.align='center'` to center your plot
+
+Use `fig.align='right'` or `fig.align='left'` to left- or right-justify your plot.
+
+See `LA0920_demo3.Rmd`.
+
+## Placing Two Plots Side-by-Side
+
+Use `fig.show='hold'` and  `out.width` 
+
+See `LA0920_demo3.Rmd`.
