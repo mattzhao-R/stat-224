@@ -45,9 +45,20 @@ ggplot(data = NLSY, aes(x=Edu2006)) +
   facet_wrap(~Gender) + 
   xlab('Years of Education')
 ```
-```{r}
-summary(NLSY$Edu2006)
-print(paste0('Standard Deviation: ', round(sd(NLSY$Edu2006),3)))
+
+```{r message=F}
+library(tidyverse)
+male <- NLSY %>% filter(Gender=='male')
+female <- NLSY %>% filter(Gender=='female')
+
+print('Male Edu Summary:') 
+summary(male$Edu2006)
+print('Female Edu Summary:') 
+summary(female$Edu2006)
+print('Male Edu Summary:') 
+sd(male$Edu2006)
+print('Female Edu Summary:') 
+sd(female$Edu2006)
 ```
 
 It appears that men and women have similar education levels. The boxplots are identical because the distribution of education is the same for both genders.
