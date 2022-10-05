@@ -28,7 +28,7 @@ library(mosaic)
 
 # Q1
 
-```{r fig.width=3, fig.height=2.5, out.width='50%'}
+```{r fig.width=3, fig.height=2.5, out.width='80%'}
 library(ggplot2)
 ggplot(data = NLSY, aes(x=Edu2006)) + 
   geom_histogram(binwidth = 1) + 
@@ -39,7 +39,7 @@ The location of the modes is due to how to the education system in the US works,
 
 # Q2
 
-```{r fig.width=3, fig.height=1, out.width='70%'}
+```{r fig.width=5, fig.height=1.5, out.width='80%'}
 ggplot(data = NLSY, aes(x=Edu2006)) + 
   geom_boxplot() + 
   facet_wrap(~Gender) + 
@@ -54,11 +54,13 @@ It appears that men and women have similar education levels. The boxplots are id
 
 # Q3
 
-```{r fig.width=2.5, fig.height=1.5, out.width='70%'}
+```{r fig.width=6, fig.height=1.5, out.width='80%'}
 ggplot(data = NLSY, aes(x=Income2005)) + 
   geom_boxplot() + 
   facet_wrap(~Gender) + 
   xlab('Income')
+```
+```{r fig.width=5, fig.height=3, out.width='80%'}
 ggplot(data = NLSY, aes(x=Income2005)) + 
   geom_histogram(binwidth = 5) + 
   facet_wrap(~Gender,ncol=1) + 
@@ -69,11 +71,13 @@ Both histograms are right-skewed and unimodal but the distribution of male incom
 
 # Q4
 
-```{r fig.width=2.5, fig.height=1.5, out.width='70%'}
+```{r fig.width=6, fig.height=1.5, out.width='80%'}
 ggplot(data = NLSY, aes(x=log(Income2005))) + 
   geom_boxplot() + 
   facet_wrap(~Gender) + 
   xlab('Income')
+```
+```{r fig.width=5, fig.height=3, out.width='80%'}
 ggplot(data = NLSY, aes(x=log(Income2005))) + 
   geom_histogram(binwidth = 0.25) + 
   facet_wrap(~Gender,ncol=1) + 
@@ -85,11 +89,19 @@ After transformation, the distributions become roughly normal, with a slight lef
 
 # Q5
 
-```{r fig.width=8, fig.height=3, out.width='100%'}
-ggplot(data = NLSY, aes(x=log(Income2005))) + 
+```{r fig.width=9, fig.height=2.5, out.width='100%'}
+edu_to12 <- NLSY[NLSY['Edu2006']<=12,]
+edu_post12 <- NLSY[NLSY['Edu2006']>12,]
+
+ggplot(data = edu_to12, aes(x=log(Income2005))) + 
   geom_boxplot() + 
-  facet_grid(Gender~Edu2006,scale='free_y') + 
+  facet_grid(vars(Gender),vars(Edu2006)) + 
   xlab('Income')
+ggplot(data = edu_post12, aes(x=log(Income2005))) + 
+  geom_boxplot() + 
+  facet_grid(vars(Gender),vars(Edu2006)) + 
+  xlab('Income')
+
 ```
 
 Now we can see that, by comparing the top graphs with the bottom ones, men generally earn more than women with the same education level.
@@ -98,7 +110,7 @@ Now we can see that, by comparing the top graphs with the bottom ones, men gener
 
 ## a)
 
-```{r fig.width=4, fig.height=3, out.width='80%'}
+```{r fig.width=7, fig.height=5, out.width='80%', fig.align='center'}
 ggplot(data = NLSY, aes(x=AFQT, y=Income2005)) + 
   geom_point() + 
   geom_smooth(method='lm') + 
@@ -113,7 +125,7 @@ Variation in income increases with AFQT Percentile Score.
 
 ## c)
 
-```{r fig.width=4, fig.height=3, out.width='80%'}
+```{r fig.width=8, fig.height=6, out.width='80%'}
 ggplot(data = NLSY, aes(x=AFQT, y=log(Income2005))) + 
   geom_point() + 
   geom_smooth(method='lm') + 
@@ -124,7 +136,7 @@ Variability in log income does not appear to change with AFQT.
 
 # Q7
 
-```{r fig.width=4, fig.height=3, out.width='70%'}
+```{r fig.width=8, fig.height=6, out.width='70%',fig.align='center'}
 ggplot(data = NLSY, aes(x=AFQT, y=log(Income2005), color = Gender)) + 
   geom_point() + 
   geom_smooth(method='lm') + 
@@ -148,11 +160,11 @@ Men generally do earn more than women at each AFQT Percentile Score.
 
 # Q8
 
-```{r fig.width=4, fig.height=3, out.width='70%'}
+```{r fig.width=12, fig.height=9, out.width='100%'}
 ggplot(data = NLSY, aes(x=AFQT, y=log(Income2005), color = Gender)) + 
   geom_point() + 
   facet_wrap(~Edu2006) +
-  geom_smooth(method='lm') + 
+  geom_smooth(method='lm',se=F) + 
   xlab('AFQT Percentile Score') + ylab('log Income')
 ```
 
