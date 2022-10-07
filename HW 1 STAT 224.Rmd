@@ -39,36 +39,23 @@ The location of the modes is due to how to the education system in the US works,
 
 # Q2
 
-```{r fig.width=5, fig.height=1.5, out.width='80%'}
-ggplot(data = NLSY, aes(x=Edu2006)) + 
-  geom_boxplot() + 
-  facet_wrap(~Gender) + 
+```{r fig.width=3, fig.height=6, out.width='80%'}
+ggplot(data = NLSY, aes(x=Gender,y=Edu2006)) +
+  geom_boxplot() +
   xlab('Years of Education')
 ```
-
-```{r message=F}
-library(tidyverse)
-male <- NLSY %>% filter(Gender=='male')
-female <- NLSY %>% filter(Gender=='female')
-
-print('Male Edu Summary:') 
-summary(male$Edu2006)
-print('Female Edu Summary:') 
-summary(female$Edu2006)
-print('Male Edu Summary:') 
-sd(male$Edu2006)
-print('Female Edu Summary:') 
-sd(female$Edu2006)
+```{r}
+aggregate(Edu2006~Gender,data=NLSY,FUN=summary)
+aggregate(Edu2006~Gender,data=NLSY,FUN=sd)
 ```
 
-It appears that men and women have similar education levels. The boxplots are identical because the distribution of education is the same for both genders.
+It appears that men and women have fairly similar education levels. The boxplots are identical because the distribution of education is roughly the same for both genders e.g. sd is similar.
 
 # Q3
 
-```{r fig.width=6, fig.height=1.5, out.width='80%'}
-ggplot(data = NLSY, aes(x=Income2005)) + 
+```{r fig.width=3, fig.height=6, out.width='80%'}
+ggplot(data = NLSY, aes(y=Income2005,x=Gender)) + 
   geom_boxplot() + 
-  facet_wrap(~Gender) + 
   xlab('Income')
 ```
 ```{r fig.width=5, fig.height=3, out.width='80%'}
@@ -82,10 +69,9 @@ Both histograms are right-skewed and unimodal but the distribution of male incom
 
 # Q4
 
-```{r fig.width=6, fig.height=1.5, out.width='80%'}
-ggplot(data = NLSY, aes(x=log(Income2005))) + 
+```{r fig.width=3, fig.height=5, out.width='80%'}
+ggplot(data = NLSY, aes(y=log(Income2005),x=Gender)) + 
   geom_boxplot() + 
-  facet_wrap(~Gender) + 
   xlab('Income')
 ```
 ```{r fig.width=5, fig.height=3, out.width='80%'}
@@ -173,7 +159,7 @@ Men generally do earn more than women at each AFQT Percentile Score.
 
 ```{r fig.width=12, fig.height=9, out.width='100%'}
 ggplot(data = NLSY, aes(x=AFQT, y=log(Income2005), color = Gender)) + 
-  geom_point() + 
+  geom_point() +
   facet_wrap(~Edu2006) +
   geom_smooth(method='lm',se=F) + 
   xlab('AFQT Percentile Score') + ylab('log Income')
