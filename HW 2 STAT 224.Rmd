@@ -1,0 +1,160 @@
+---
+title: 'STAT 224 Autumn 2022 Homework 2'
+author: "Matthew Zhao"
+fontsize: 12pt
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+  word_document: default
+header-includes: \usepackage{pdfpages}
+geometry: margin=0.75in
+fig_crop: no
+---
+
+```{r echo=F, include = FALSE}
+library(knitr)
+knitr::opts_chunk$set(fig.width=4, fig.height=3, message=F, warning=F, dpi=36)
+options(width=70, digits=4, scipen=8)
+```
+
+\newcommand{\ansbegin}{\smallbreak\vspace{-8pt}\hrulefill \smallbreak\noindent {\sl Answer\/}:\enspace\ignorespaces}
+\newcommand{\ansend}{\smallbreak\hrulefill \smallbreak\vspace{-8pt}}
+
+<!-- **Due midnight on Friday, October 15, 2021** on Gradescope. -->
+
+# Question 1
+
+
+```{r}
+fevdata = read.table("http://www.stat.uchicago.edu/~yibi/s224/data/fevdata.txt", h = TRUE)
+fevdata$sex = factor(fevdata$sex, labels=c("Female","Male"))
+fevdata$smoke = factor(fevdata$smoke, labels=c("Nonsmoker","Smoker"))
+```
+
+## Q1a --- 6 points
+
+```{r}
+lmm.nosmoke = lm(fev ~ age, data=subset(fevdata, sex == "Male" & smoke == "Nonsmoker"))
+summary(lmm.nosmoke)
+```
+
+$\hat{\beta}_{0}^{mn} = -0.0576$, $s.e.(\hat{\beta}_{0}^{mn}) = 0.1147$
+
+$\hat{\beta}_{1}^{mn} = 0.2882$, $s.e.(\hat{\beta}_{1}^{mn}) = 0.0114$
+
+$\hat{\sigma}^{mn} = 0.556, n=654$
+
+## Q1b --- 8 points
+
+$t=\frac{\hat{\beta}_j - \beta_{j}^0}{s.e.({\hat{\beta}_j})}$
+
+### i)
+
+```{r}
+t = (-0.0576 - 0)/0.1147
+n=654
+p=1
+pval = pt(t,df=n-p-1,lower.tail = F)
+print(paste0("t-stat: ",signif(t,digits = 5)))
+print(paste0("df: ",n-p-1))
+print(paste0("P-value: ",signif(pval,digits = 5)))
+```
+
+### ii)
+
+```{r}
+t = (-0.0576 - 0.1)/0.1147
+n=654
+p=1
+pval = 2*pt(abs(t),df=n-p-1,lower.tail = F)
+print(paste0("t-stat: ",signif(t,digits = 5)))
+print(paste0("df: ",n-p-1))
+print(paste0("P-value: ",signif(pval,digits = 5)))
+```
+
+### iii)
+
+```{r}
+t = (0.2882 - 0.1)/0.0114
+n=654
+p=1
+pval = pt(t,df=n-p-1)
+print(paste0("t-stat: ",signif(t,digits = 5)))
+print(paste0("df: ",n-p-1))
+print(paste0("P-value: ",signif(pval,digits = 5)))
+```
+
+### iv)
+
+```{r}
+t = (0.2882 - 0.3)/0.0114
+n=654
+p=1
+pval = pt(t,df=n-p-1,lower.tail = F)
+print(paste0("t-stat: ",signif(t,digits = 5)))
+print(paste0("df: ",n-p-1))
+print(paste0("P-value: ",signif(pval,digits = 5)))
+```
+
+## Q1c --- 4 points
+
+$\hat{\beta}_j \pm t_{(n-p-1,\frac{\alpha}{2})} * s.e.(\hat{\beta}_j)$
+
+```{r}
+beta_hat = 0.2882 
+se = 0.0114
+n=654
+p=1
+alpha = 0.1
+t = qt(alpha/2,df=n-p-1,lower.tail = F)
+print(paste0("confidence interval: ",'(',
+             signif(beta_hat-t*se,digits=5),',', 
+             signif(beta_hat+t*se,digits=5),')'))
+```
+
+We are 90% confident that $\beta_{1}^{mn}$ is between 0.26942 and 0.30698.
+
+## Q1d --- 5 points
+
+```{r, message=FALSE}
+aggregate(age ~ sex + smoke, data=fevdata, mean)
+aggregate(age ~ sex + smoke, data=fevdata, sd)
+```
+
+
+## Q1e --- 4 points
+
+
+
+## Q1f --- 5 points
+
+
+
+## Q1g --- 6 points
+
+
+
+# Question 2
+
+```{r}
+NLSY = read.table("http://www.stat.uchicago.edu/~yibi/s224/data/NLSY.txt", header=T)
+NLSYm = subset(NLSY, Gender == "male")
+```
+
+## Q2a --- 6 points
+
+```{r}
+lm1 = lm(log(Income2005) ~ AFQT, data=NLSYm)
+lm2 = lm(log(Income2005) ~ AFQT + Edu2006, data=NLSYm)
+```
+
+
+## Q2b --- 5 points
+
+
+
+## Q2c --- 2 points
+
+
+
