@@ -266,13 +266,10 @@ sst = sum((log(NLSYm$Income2005) - mean(log(NLSYm$Income2005)))^2)
 ssr = sum((lm1$fitted.values - mean(log(NLSYm$Income2005)))^2)
 ssr/sst
 ```
-
-
-
-
 ```{r}
 sst = sum((log(NLSYm$Income2005) - mean(log(NLSYm$Income2005)))^2)
 ssr = sum((lm2$fitted.values - mean(log(NLSYm$Income2005)))^2)
 ssr/sst
 ```
 
+The multiple $R^2$ values obtained mean that model 1 can explain 12.21% of the variation in Y and that model 2 can explain 14.91% of the variation in Y.
