@@ -43,7 +43,7 @@ $\hat{\beta}_{0}^{mn} = -0.0576$, $s.e.(\hat{\beta}_{0}^{mn}) = 0.1147$
 
 $\hat{\beta}_{1}^{mn} = 0.2882$, $s.e.(\hat{\beta}_{1}^{mn}) = 0.0114$
 
-$\hat{\sigma}^{mn} = 0.556, n=654$
+$\hat{\sigma}^{mn} = 0.556, n=310$
 
 ## Q1b --- 8 points
 
@@ -104,7 +104,7 @@ $\hat{\beta}_j \pm t_{(n-p-1,\frac{\alpha}{2})} * s.e.(\hat{\beta}_j)$
 ```{r}
 beta_hat = 0.2882 
 se = 0.0114
-n=654
+n=nrow(subset(fevdata, sex == "Male" & smoke == "Nonsmoker"))
 p=1
 alpha = 0.1
 t = qt(alpha/2,df=n-p-1,lower.tail = F)
@@ -113,7 +113,7 @@ print(paste0("confidence interval: ",'(',
              signif(beta_hat+t*se,digits=5),')'))
 ```
 
-We are 90% confident that $\beta_{1}^{mn}$ is between 0.26942 and 0.30698.
+We are 90% confident that $\beta_{1}^{mn}$ is between 0.26939 and 0.30701.
 
 ## Q1d --- 5 points
 
@@ -122,18 +122,116 @@ aggregate(age ~ sex + smoke, data=fevdata, mean)
 aggregate(age ~ sex + smoke, data=fevdata, sd)
 ```
 
+$\hat{\beta}_{0} + \hat{\beta}_{1}x_0 \pm t_{(n-2,\frac{\alpha}{2})}\hat{\sigma} \sqrt{\frac{1}{n} + \frac{(x_0 - \bar{x})^2}{\sum (x_i - \bar{x})^2}}$
+
+```{r}
+est = lmm.nosmoke$coefficients[1] + lmm.nosmoke$coefficients[2]*18
+est
+```
+
+Estimate: $\hat{\beta}_{0} + \hat{\beta}_{1}x_0$ = 5.13
+
+```{r}
+n = nrow(subset(fevdata, sex == "Male" & smoke == "Nonsmoker"))
+t = qt(0.05/2,n-2,lower.tail = F)
+sig_hat = 0.556
+x_0 = 18
+x_bar = 9.687
+sd = 2.778
+num = (x_0-x_bar)^2
+denom = (n-1)*sd^2
+int = t*sig_hat*sqrt((1/n)+(num/denom))
+int
+```
+
+```{r}
+print(paste0('CI: (',signif(est-int,digits=5),',',signif(est+int,digits=5),')'))
+```
 
 ## Q1e --- 4 points
 
+$\hat{\beta}_{0} + \hat{\beta}_{1}x_0 \pm t_{(n-2,\frac{\alpha}{2})}\hat{\sigma} \sqrt{\frac{1}{n} + \frac{(x_0 - \bar{x})^2}{\sum (x_i - \bar{x})^2}}$
 
+```{r}
+est = lmm.nosmoke$coefficients[1] + lmm.nosmoke$coefficients[2]*14
+est
+```
+
+Estimate: $\hat{\beta}_{0} + \hat{\beta}_{1}x_0$ = 3.977
+
+```{r}
+n = nrow(subset(fevdata, sex == "Male" & smoke == "Nonsmoker"))
+t = qt(0.05/2,n-2,lower.tail = F)
+sig_hat = 0.556
+x_0 = 14
+x_bar = 9.687
+sd = 2.778
+num = (x_0-x_bar)^2
+denom = (n-1)*sd^2
+int = t*sig_hat*sqrt((1/n)+(num/denom))
+int
+```
+
+```{r}
+print(paste0('CI: (',signif(est-int,digits=5),',',signif(est+int,digits=5),')'))
+```
+
+The interval for Q1d is wider.
 
 ## Q1f --- 5 points
 
+$\hat{\beta}_{0} + \hat{\beta}_{1}x_0 \pm t_{(n-2,\frac{\alpha}{2})}\hat{\sigma} \sqrt{1+\frac{1}{n} + \frac{(x_0 - \bar{x})^2}{\sum (x_i - \bar{x})^2}}$
 
+```{r}
+est = lmm.nosmoke$coefficients[1] + lmm.nosmoke$coefficients[2]*14
+est
+```
+
+Estimate: $\hat{\beta}_{0} + \hat{\beta}_{1}x_0$ = 3.977
+
+```{r}
+n = nrow(subset(fevdata, sex == "Male" & smoke == "Nonsmoker"))
+t = qt(0.05/2,n-2,lower.tail = F)
+sig_hat = 0.556
+x_0 = 14
+x_bar = 9.687
+sd = 2.778
+num = (x_0-x_bar)^2
+denom = (n-1)*sd^2
+int = t*sig_hat*sqrt(1+(1/n)+(num/denom))
+int
+```
+
+```{r}
+print(paste0('CI: (',signif(est-int,digits=5),',',signif(est+int,digits=5),')'))
+```
+
+The interval for this question is much larger since we are making a point prediction for a specific individual rather than for the average. 
 
 ## Q1g --- 6 points
 
+```{r}
+lmm.nosmoke.female = lm(fev ~ age, data=subset(fevdata, sex == "Female" & smoke == "Nonsmoker"))
+summary(lmm.nosmoke.female)
+```
 
+$\hat{\beta}_{0}^{fn} = 0.67387, \hat{\beta}_{1}^{fn} = 0.18209$
+
+$\hat{\beta}_j \pm t_{(n-p-1,\frac{\alpha}{2})} * s.e.(\hat{\beta}_j)$
+
+```{r}
+beta_hat = 0.18209 
+se = 0.00915
+n=nrow(subset(fevdata, sex == "Female" & smoke == "Nonsmoker"))
+p=1
+alpha = 0.1
+t = qt(alpha/2,df=n-p-1,lower.tail = F)
+print(paste0("confidence interval: ",'(',
+             signif(beta_hat-t*se,digits=5),',', 
+             signif(beta_hat+t*se,digits=5),')'))
+```
+
+The confidence interval for boys is (0.26939, 0.30701) while it is (0.16699,0.19719) for girls. Since there is no overlap, the lung capacity for boys most likely grows faster than for girls. 
 
 # Question 2
 
@@ -149,12 +247,32 @@ lm1 = lm(log(Income2005) ~ AFQT, data=NLSYm)
 lm2 = lm(log(Income2005) ~ AFQT + Edu2006, data=NLSYm)
 ```
 
+For the first model the coefficient of **AFQT** is  `lm1$coefficients[1]`while for the second model it is `lm2$coefficients[1]`.
+
+The coefficients are different since in the second model we also have education as a covariate. This means that the interpretation of the regression coefficient for **AFQT** is different, since in the second model it is interpreted as the change in log income from an increase of 1 percentile on the AFQT for a given level of education.
 
 ## Q2b --- 5 points
 
-
+```{r}
+yres = lm(log(Income2005) ~ Edu2006, data=NLSYm)$res
+tres = lm(AFQT ~ Edu2006, data=NLSYm)$res
+lm(yres ~ tres)$coef
+```
 
 ## Q2c --- 2 points
 
+```{r}
+sst = sum((log(NLSYm$Income2005) - mean(log(NLSYm$Income2005)))^2)
+ssr = sum((lm1$fitted.values - mean(log(NLSYm$Income2005)))^2)
+ssr/sst
+```
 
+
+
+
+```{r}
+sst = sum((log(NLSYm$Income2005) - mean(log(NLSYm$Income2005)))^2)
+ssr = sum((lm2$fitted.values - mean(log(NLSYm$Income2005)))^2)
+ssr/sst
+```
 
