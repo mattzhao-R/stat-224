@@ -1,0 +1,103 @@
+---
+title: 'STAT 224 Autumn 2022 HW3'
+author: "Matthew Zhao"
+fontsize: 12pt
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+  word_document: default
+header-includes: \usepackage{pdfpages}
+geometry: margin=0.75in
+fig_crop: no
+---
+
+```{r echo=F, include = FALSE}
+library(knitr)
+knitr::opts_chunk$set(fig.width=4, fig.height=3, message=F, warning=F)
+options(width=70, digits=4, scipen=8)
+```
+
+
+```{r}
+food = read.table("http://www.stat.uchicago.edu/~yibi/s224/data/food.txt", h = T)
+ee = read.table("http://www.stat.uchicago.edu/~yibi/s224/data/EE.txt", h = T)
+te = read.table("http://www.stat.uchicago.edu/~yibi/s224/data/TE.txt", h = T)
+```
+
+## Q1a --- 3 Points
+
+
+
+## Q1b --- 5 points
+
+
+```
+> summary(lmte)
+Residual standard error: 0.07495 on 12 degrees of freedom
+Multiple R-squared:  0.8184,	Adjusted R-squared:  0.7881 
+$F$-statistic: 27.03 on 2 and 12 DF,  p-value: 3.591e-05
+```
+
+(You can produce the ANOVA table by replacing ? and ??? with numbers in the 
+table below. )
+
+Source | df | SS | MS | F | P-value 
+:--------|--:|:--------:|:-------:|:------:|------:
+Regression | ? | SSR = ??? | MSR = ??? | F = ??? | ??? 
+Error | ? | SSE = ??? | MSE = ??? |  | 
+
+
+## Q1c --- 5 points
+
+
+
+## Q1d --- 6 Points
+
+
+
+## Q1e --- 2 Points
+
+
+
+## Q1f --- 5 points
+
+
+
+# Question 2
+
+
+## Q2a --- 3 points
+
+
+
+## Q2b --- 2 points
+
+
+
+## Q2c --- 2 points
+
+
+
+## Q2d --- 2 points
+
+
+
+## Q2e --- 3 points
+
+
+
+## Q2f --- 4 points
+
+
+
+## Q2g --- 2 points
+
+
+
+## Q2h --- 4 points
+
+
+
+## Q2i --- 2 points
+
