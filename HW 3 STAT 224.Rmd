@@ -61,8 +61,8 @@ pf(27.03,2,12,lower.tail = F)
 
 Source | df | SS | MS | F | P-value 
 :--------|--:|:--------:|:-------:|:------:|------:
-Regression | 2 | SSR = 0.3378 | MSR = 0.03748 | F = 27.03 | 0.00003593 
-Error | 12 | SSE = 0.07495 | MSE = 0.02815 |  | 
+Regression | 2 | SSR = 0.3378 | MSR = 0.1689 | F = 27.03 | 0.00003593 
+Error | 12 | SSE = 0.07495 | MSE = 0.006246 |  | 
 
 
 ## Q1c --- 5 points
@@ -90,6 +90,14 @@ Since the F-test is not statistically significant, we say that we fail to reject
 ## Q1d --- 6 Points
 
 ```{r}
+full_lm = lm(log(V) ~ log(K) + log(L), data = food)
+reduced_lm = lm(log(V) ~ I(log(K)-log(L)), offset=log(L), data = food)
+anova(reduced_lm,full_lm)
+```
+
+For Food: F-stat 22.7 with $dfE_r - dfE_f = 1$ and $dfE_f = 12$, p-value 0.00046.
+
+```{r}
 full_lm = lm(log(V) ~ log(K) + log(L), data = te)
 reduced_lm = lm(log(V) ~ I(log(K)-log(L)), offset=log(L), data = te)
 anova(reduced_lm,full_lm)
@@ -105,7 +113,7 @@ anova(reduced_lm,full_lm)
 
 For Equipment and Supplies (EE): F-stat 0.41 with $dfE_r - dfE_f = 1$ and $dfE_f = 12$, p-value 0.53.
 
-At the 0.05 significance level, we fail to reject that $\beta_L + \beta_K = 1$
+At the 0.05 significance level, we fail to reject that $\beta_L + \beta_K = 1$ for TE and EE. We reject for food. 
 
 ## Q1e --- 2 Points
 
