@@ -50,8 +50,8 @@ $SSE = 0.07495$
 $R^2 = 1 - \frac{SSE}{SST}, SST = SSR + SSE \Rightarrow R^2 = 1-\frac{SSE}{SSR + SSE} \Rightarrow SSR = SSE \times \frac{R^2}{1-R^2} \Rightarrow SSR = 0.07495 \times \frac{0.8184}{1-0.8184} = 0.3378$
 
 Since the F-statistic is drawn from F distribution $F_{2,12}$, dfR = 2 and dfE = 12 so 
-$MSR = \frac{SSR}{dfR} = \frac{0.07495}{2} = 0.03748$ and 
-$MSE = \frac{SSe}{dfE} = \frac{0.3378}{12} = 0.02815$
+$MSR = \frac{SSR}{dfR} = \frac{0.3378}{2} = 0.1689$ and 
+$MSE = \frac{SSE}{dfE} = \frac{0.07495}{12} = 0.006246$
 
 The F-statistic = 27.03
 
@@ -149,35 +149,97 @@ Since the p-value is higher than 0.05, we fail to reject the null and conclude t
 
 ## Q2a --- 3 points
 
+Model 1: 
 
+$Price = -6.107 + 0.169* Horsepower$
+
+Prediction = $-6.107 + 0.169*100 = 10.79$ = $10,790 USD
+
+
+Model 2: 
+
+$Price = -4.117 + 0.174* Horsepower + -3.162 * I(USA) + -3.818*I(Japan) + 0.311*I(Germany)$
+
+Prediction = $-4.117 + 0.174* 100 + 0.311*1 = 13.59$ = $13,590 USD
+
+
+Model 3: 
+
+$Price = -10.882 + 0.237* Horsepower + 2.076 * I(USA) + 4.755*I(Japan) + 11.774*I(Germany) + -0.052*Horsepower*I(USA) + -0.077*Horsepower*I(Japan) + -0.095*Horsepower*I(Germany)$
+
+Prediction = $-10.882 + 0.237* 100 + 11.774*1 -0.095*100*1 = 15.09$ = $15,090 USD
 
 ## Q2b --- 2 points
 
+Model 2: 
 
+$Price = -4.117 + 0.174* Horsepower + -3.162 * I(USA) + -3.818*I(Japan) + 0.311*I(Germany)$
+
+Prediction = $-4.117 + 0.174* 100= 13.28$ = $13,280 USD
+
+
+Model 3: 
+
+$Price = -10.882 + 0.237* Horsepower + 2.076 * I(USA) + 4.755*I(Japan) + 11.774*I(Germany) + -0.052*Horsepower*I(USA) + -0.077*Horsepower*I(Japan) + -0.095*Horsepower*I(Germany)$
+
+Prediction = $-10.882 + 0.237* 100= 12.82$ = $12,820 USD
 
 ## Q2c --- 2 points
 
-
+If a car is from Japan, its expected price is $3,818 lower than if it were not from Japan, given that it is also not from the USA or Germany. 
 
 ## Q2d --- 2 points
 
-
+A unit increase in horsepower (1 additional horsepower) is associated with an increase in expected car price of $174 holding other variables constant. 
 
 ## Q2e --- 3 points
 
+A unit increase in horsepower (1 additional horsepower) is associated with an increase in expected car price of \$237 given that the car is not from the USA, Japan, or Germany. If it is from one of these countries, then a unit increase in horsepower is associated with either an increase in expected car price of \$185 if it is from the USA, \$160 if it is from Japan, or $142 if it is from Germany.
 
+The interaction between Country and horsepower means that depending on which country the car is from (if it is a country that the model has an indicator for), additional horsepower changes the expected price by a different amount. 
 
 ## Q2f --- 4 points
 
+We would test model 3 against model 2, where model 2 is nested in model 3 i.e. is a reduced version. 
 
+$F = \frac{(SSE_{reduced} - SSE_{full})/(dfE_{reduced} - dfE_{full})}{MSE_{full}} = \frac{(1390.31-1319.85)/(85-82)}{1319.85/82} = 1.459$
+
+Degrees of Freedom for F-stat are $dfE_{reduced}-dfE_{full}=85-82=3$ and $dfE_{full}=82$
+
+```{r}
+pf(1.459,3,82,lower.tail = F)
+```
+
+The p-value is 0.2318. Since it is higher than 0.05, we fail to reject the null that the interactions are zero. We can conclude that the interactions are insignificantly different from 0 at the 0.05 significance level.
 
 ## Q2g --- 2 points
 
+Model 2: 
 
+$Price = -4.117 + 0.174* Horsepower + -3.162 * I(USA) + -3.818*I(Japan) + 0.311*I(Germany)$
+
+Since constant and horsepower are the same for all countries, they do not affect the comparison:
+
+Prediction = $ -3.162 * I(USA) + -3.818*I(Japan) + 0.311*I(Germany)$
+
+If USA: $-3.162$, if Japan: $-3.818$, if Germany: $0.311$, if Other: $0$.
+
+Japan has the least expensive cars based on model 2 since it has a large negative coefficient, meaning that a car from Japan is expected to be cheaper than a car not from Japan, USA, or Germany. Additionally, the p-value for the Japan coefficient is statistically signficant at the 0.05 significance level, meaning that it is significantly different from 0. While the USA also has a negative coefficient that is significant at the 0.05 significance level, it is not as large as Japan's.
 
 ## Q2h --- 4 points
 
+Compare Model 1 (reduced) and Model 2 (full).
 
+$F = \frac{(SSE_{reduced} - SSE_{full})/(dfE_{reduced} - dfE_{full})}{MSE_{full}} = \frac{(1604.44-1390.31)/(88-85)}{1390.31/85} = 4.363$
+
+Degrees of Freedom for F-stat are $dfE_{reduced}-dfE_{full}=88-85=3$ and $dfE_{full}=85$
+
+```{r}
+pf(4.363,3,85,lower.tail = F)
+```
+
+The p-value is 0.006591 Since it is lower than 0.05, we reject the null that the country coefficients are zero. We can conclude that the country indicators are significant at the 5% level, meaning that the country a car was made in affects the price.
 
 ## Q2i --- 2 points
 
+Yes. The Germany category is insignificantly different from 0 at the 5% level so it can be moved to other. Additionally, the USA and Japan categories could potentially be merged since their coefficients are both statistically significant and are fairly similar to each other. However, this second recommendation should be tested. 
