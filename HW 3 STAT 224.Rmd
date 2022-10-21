@@ -27,7 +27,13 @@ te = read.table("http://www.stat.uchicago.edu/~yibi/s224/data/TE.txt", h = T)
 
 ## Q1a --- 3 Points
 
+```{r}
+lmte = lm(log(V) ~ log(K) + log(L), data = te)
+print(lmte$coefficients[2:3])
+confint(lmte,'log(L)',level = 0.90)
+```
 
+Least Squares estimates for $\beta_K$ and $\beta_L$ are 0.5057 and 0.8455 respectively, with the 90% CI for $\beta_L$: (0.09411,1.597). This means that we are 90% confident that a 1% increase in labor input would lead to an increase in output of 0.09411 to 1.597%. 
 
 ## Q1b --- 5 points
 
@@ -39,13 +45,24 @@ Multiple R-squared:  0.8184,	Adjusted R-squared:  0.7881
 $F$-statistic: 27.03 on 2 and 12 DF,  p-value: 3.591e-05
 ```
 
-(You can produce the ANOVA table by replacing ? and ??? with numbers in the 
-table below. )
+$SSE = 0.07495$
+
+$R^2 = 1 - \frac{SSE}{SST}, SST = SSR + SSE \Rightarrow R^2 = 1-\frac{SSE}{SSR + SSE} \Rightarrow SSR = SSE \times \frac{R^2}{1-R^2} \Rightarrow SSR = 0.07495 \times \frac{0.8184}{1-0.8184} = 0.3378$
+
+Since the F-statistic is drawn from F distribution $F_{2,12}$, dfR = 2 and dfE = 12 so 
+$MSR = \frac{SSR}{dfR} = \frac{0.07495}{2} = 0.03748$ and 
+$MSE = \frac{SSe}{dfE} = \frac{0.3378}{12} = 0.02815$
+
+The F-statistic = 27.03
+
+```{r}
+pf(27.03,2,12,lower.tail = F)
+```
 
 Source | df | SS | MS | F | P-value 
 :--------|--:|:--------:|:-------:|:------:|------:
-Regression | ? | SSR = ??? | MSR = ??? | F = ??? | ??? 
-Error | ? | SSE = ??? | MSE = ??? |  | 
+Regression | 2 | SSR = 0.3378 | MSR = 0.03748 | F = 27.03 | 0.00003593 
+Error | 12 | SSE = 0.07495 | MSE = 0.02815 |  | 
 
 
 ## Q1c --- 5 points
