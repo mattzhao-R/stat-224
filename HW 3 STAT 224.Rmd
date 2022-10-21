@@ -67,18 +67,81 @@ Error | 12 | SSE = 0.07495 | MSE = 0.02815 |  |
 
 ## Q1c --- 5 points
 
+Full Model: $\log{V} = \log{\alpha} + \beta_K \log{K} + \beta_{L} \log{L} + \epsilon$
 
+Reduced Model ($\beta_K = \beta_L$): $\log{V} = \log{\alpha} + \beta_K (\log{K} + \log{L}) + \epsilon$
+
+```{r}
+full_lmte = lm(log(V) ~ log(K) + log(L), data = te)
+reduced_lmte = lm(log(V) ~ I(log(K) + log(L)), data = te)
+anova(reduced_lmte,full_lmte)
+```
+
+$F = \frac{(SSE_{reduced} - SSE_{full})/(dfE_{reduced} - dfE_{full})}{MSE_{full}} = \frac{(0.0682-0.0674)/(13-12)}{0.0674/12} = 0.1424$
+
+Degrees of freedom for F-stat is $dfE_r - dfE_f$ and $dfE_f$ so 13-12 = 1 and 12. 
+
+```{r}
+pf(0.1424,1,12,lower.tail = F)
+```
+
+Since the F-test is not statistically significant, we say that we fail to reject the null that $\beta_L = \beta_K$. 
 
 ## Q1d --- 6 Points
 
+```{r}
+full_lm = lm(log(V) ~ log(K) + log(L), data = te)
+reduced_lm = lm(log(V) ~ I(log(K)-log(L)), offset=log(L), data = te)
+anova(reduced_lm,full_lm)
+```
 
+For Transportation Equipment (TE): F-stat 2.87 with $dfE_r - dfE_f = 1$ and $dfE_f = 12$, p-value 0.12
+
+```{r}
+full_lm = lm(log(V) ~ log(K) + log(L), data = ee)
+reduced_lm = lm(log(V) ~ I(log(K)-log(L)), offset=log(L), data = ee)
+anova(reduced_lm,full_lm)
+```
+
+For Equipment and Supplies (EE): F-stat 0.41 with $dfE_r - dfE_f = 1$ and $dfE_f = 12$, p-value 0.53.
+
+At the 0.05 significance level, we fail to reject that $\beta_L + \beta_K = 1$
 
 ## Q1e --- 2 Points
 
 
+```{r}
+model = lm(log(V) ~ log(K) + log(L) + YEAR, data = ee)
+summary(model)
+```
+
+Since $H_0: \log{\rho} =0$ and $H_a: \log{\rho} >0$, we use a 1-sided t-test.
+
+$t = \frac{\hat{\beta}_j - \beta_{j}^0}{se(\hat{\beta}_j)} = \frac{0.02497-0}{0.00346} = 7.217$
+
+```{r}
+pt(7.217,nrow(ee)-3-1,lower.tail = F)
+```
+
+Since the p-value is less than 0.05, we reject the null hypothesis, meaning that there was technological progress from 1972 to 1986 for the EE sector.
 
 ## Q1f --- 5 points
 
+```{r}
+full_food = lm(log(V) ~ log(K) + log(L) + YEAR, data = food)
+reduced_food = lm(log(V) ~ YEAR, data = food)
+anova(reduced_food, full_food)
+```
+
+$F = \frac{(SSE_{reduced}-SSE_{full})/(dfE_{reduced}-dfE_{full})}{MSE_{full}} = \frac{(0.0447-0.0413)/(13-11)}{0.0413/11} = 0.4527$
+
+$dfE_{reduced}-dfE_{full} = 13-11 = 2$, $dfE_{full} = 11$.
+
+```{r}
+pf(0.4527,2,11,lower.tail = F)
+```
+
+Since the p-value is higher than 0.05, we fail to reject the null and conclude that $\beta_K = \beta_L = 0$
 
 
 # Question 2

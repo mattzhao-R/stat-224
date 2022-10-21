@@ -53,7 +53,7 @@ $t=\frac{\hat{\beta}_j - \beta_{j}^0}{s.e.({\hat{\beta}_j})}$
 
 ```{r}
 t = (-0.0576 - 0)/0.1147
-n=654
+n=nrow(subset(fevdata, sex == "Male" & smoke == "Nonsmoker"))
 p=1
 pval = pt(t,df=n-p-1,lower.tail = F)
 print(paste0("t-stat: ",signif(t,digits = 5)))
@@ -61,11 +61,13 @@ print(paste0("df: ",n-p-1))
 print(paste0("P-value: ",signif(pval,digits = 5)))
 ```
 
+Fail to reject null hypothesis
+
 ### ii)
 
 ```{r}
-t = (-0.0576 - 0.1)/0.1147
-n=654
+t = (0.2882 - 0.1)/0.0114
+n=nrow(subset(fevdata, sex == "Male" & smoke == "Nonsmoker"))
 p=1
 pval = 2*pt(abs(t),df=n-p-1,lower.tail = F)
 print(paste0("t-stat: ",signif(t,digits = 5)))
@@ -73,11 +75,13 @@ print(paste0("df: ",n-p-1))
 print(paste0("P-value: ",signif(pval,digits = 5)))
 ```
 
+Reject null
+
 ### iii)
 
 ```{r}
 t = (0.2882 - 0.1)/0.0114
-n=654
+n=nrow(subset(fevdata, sex == "Male" & smoke == "Nonsmoker"))
 p=1
 pval = pt(t,df=n-p-1)
 print(paste0("t-stat: ",signif(t,digits = 5)))
@@ -85,17 +89,21 @@ print(paste0("df: ",n-p-1))
 print(paste0("P-value: ",signif(pval,digits = 5)))
 ```
 
+Fail to reject null
+
 ### iv)
 
 ```{r}
 t = (0.2882 - 0.3)/0.0114
-n=654
+n=nrow(subset(fevdata, sex == "Male" & smoke == "Nonsmoker"))
 p=1
 pval = pt(t,df=n-p-1,lower.tail = F)
 print(paste0("t-stat: ",signif(t,digits = 5)))
 print(paste0("df: ",n-p-1))
 print(paste0("P-value: ",signif(pval,digits = 5)))
 ```
+
+Fail to reject null
 
 ## Q1c --- 4 points
 
@@ -113,7 +121,7 @@ print(paste0("confidence interval: ",'(',
              signif(beta_hat+t*se,digits=5),')'))
 ```
 
-We are 90% confident that $\beta_{1}^{mn}$ is between 0.26939 and 0.30701.
+We are 90% confident that $\beta_{1}^{mn}$ is between 0.26939 and 0.30701. In words, we are 90% confident that the lung capacity in liters of male nonsmokers increases by a value between 0.26939 and 0.30701 per year.
 
 ## Q1d --- 5 points
 
@@ -247,9 +255,14 @@ lm1 = lm(log(Income2005) ~ AFQT, data=NLSYm)
 lm2 = lm(log(Income2005) ~ AFQT + Edu2006, data=NLSYm)
 ```
 
-For the first model the coefficient of **AFQT** is  `lm1$coefficients[1]`while for the second model it is `lm2$coefficients[1]`.
+```{r}
+print(lm1$coefficients[1])
+lm2$coefficients[1]
+```
 
-The coefficients are different since in the second model we also have education as a covariate. This means that the interpretation of the regression coefficient for **AFQT** is different, since in the second model it is interpreted as the change in log income from an increase of 1 percentile on the AFQT for a given level of education.
+For the first model the coefficient of **AFQT** is 3.241 while for the second model it is 2.476.
+
+The coefficients are different since in the second model we also have education as a covariate. This means that the interpretation of the regression coefficient for **AFQT** is different, since in the second model it is interpreted as the change in log income from an increase of 1 percentile on the AFQT for a given level of education. This is different than for the first model which is just the change in log income from an increase of 1 percentile on the AFQT.
 
 ## Q2b --- 5 points
 
