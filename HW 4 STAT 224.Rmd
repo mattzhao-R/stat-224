@@ -13,6 +13,7 @@ fig_crop: no
 ---
 
 ```{r echo=F, include = FALSE}
+library(tidyverse)
 library(knitr)
 knitr::opts_chunk$set(fig.width=4, fig.height=3, message=F, warning=F)
 options(width=70, digits=4, scipen=8)
@@ -32,17 +33,43 @@ eduexp$year = as.factor(eduexp$year)
 
 ## Q1a --- 4 points
 
-
+```{r fig.width=6, fig.height=4, out.width='75%',fig.align='center'}
+ggplot(data = eduexp, mapping = aes(x=log(x1), y=log(y), color = year)) + 
+  geom_line()
+ggplot(data = eduexp, mapping = aes(x=log(x1), y=log(y), color = region)) + 
+  geom_line()
+```
 
 ## Q1b --- 5 points
 
+```{r}
+lm1 = lm(log(y) ~ log(x1) + year + region + log(x1)*year + log(x1)*region ,data = eduexp)
+lm2 = lm(log(y) ~ log(x1) + year + region + log(x1)*region,data = eduexp)
+anova(lm2,lm1)
+```
+
+F-stat of 0.83 with df 2, 138 and p-value of 0.44. At the 5% significance level, we fail to reject the null and conclude that the slope for log(x1) does not vary with year i.e. the interaction term is insignificant.
 
 ## Q1c --- 5 points
 
+```{r}
+lm1 = lm(log(y) ~ log(x1) + year + region + log(x1)*year + log(x1)*region, data = eduexp)
+lm2 = lm(log(y) ~ log(x1) + year + region + log(x1)*year, data = eduexp)
+anova(lm2,lm1)
+```
+
+F-stat of 2.65 with df 3, 138 and p-value of 0.051. At the 5% significance level, we fail to reject the null and conclude that the slope for log(x1) does not vary with region i.e. the interaction term is insignificant.
 
 
 ## Q1d --- 4 points
 
+```{r}
+lm1 = lm(log(y) ~ log(x1) + year + region, data = eduexp)
+lm2 = lm(log(y) ~ 1, data = eduexp)
+anova(lm2,lm1)
+```
+
+F-stat of 375 with df 6, 143 and p-value of less than 2e-16. At the 5% significance level, we reject the null and conclude that log(x1) has an effect on log(y) after accounting for year and regoin assuming no interactions. 
 
 
 # Question 2
@@ -57,7 +84,13 @@ NLSY = read.table("http://www.stat.uchicago.edu/~yibi/s224/data/NLSY.txt", heade
 
 ## Q2a --- 3 points
 
+```{r}
+lm1 = lm(log(Income2005) ~ AFQT + Gender + AFQT*Gender, data = NLSY)
+lm2 = lm(log(Income2005) ~ AFQT + Gender, data = NLSY)
+anova(lm2,lm1)
+```
 
+F-stat of 1.56 with df 1, 2580 and p-value of 0.21. At the 5% significance level, we fail to reject the null and conclude that the effect of AFQT on log(Income2005) does not vary with Gender i.e. the interaction is insignificant. 
 
 **Model A**: 
 ```{r}
@@ -94,15 +127,88 @@ modele = lm(log(Income2005) ~ AFQT + Gender + eduscore2, data=NLSY)
 
 ## Q2b --- 8 points
 
+### i)
 
+Model A is nested inside Model B because ordinal models are always nested inside their nominal versions. This is because we can set the coefficients of the nominal predictors/indicators such that they are the same as those of the ordinal model. Hence, ordinal models are nested inside their respective nominal versions.
+
+### ii)
+
+```{r}
+print(modela$coefficients)
+```
+```{r}
+print(modelb$coefficients)
+```
+
+With model a, the positive coefficient on Edu2006 indicates that log(Income2005) increases with years of education. With model b, we see mostly positive coefficients, with Edu(2006) for 9th grade being the only negative coefficient. Additionally, the magnitude of the coefficients generally rises with higher grades, indicating that more years of education is beneficial, similar to model a. The notable exception besides grade 9 is grade 19, which could potentially be related to the duration of different advanced degree programs. 
+
+### iii)
+
+Yes. The magnitude of the education generally increases with the grade level of the indicator, meaning that more years of education is associated with higher log(Income)
+
+### iv)
+
+```{r}
+anova(modela,modelb)
+```
+
+We reject the null at the 5% significance level and can conclude that the nominal model of education is true over the ordinal model i.e. that there are different effects for each year of education.  
 
 ## Q2c --- 8 points
 
+### i)
 
+Yes because if the coefficients of the indicators for 6-11, 13-15, and 17+ in model b are the same, then model b becomes model c. Since model c is a special case of model b, we can say that model c is nested in model b. 
+
+### ii)
+
+```{r}
+print(modelc$coefficients)
+```
+```{r}
+print(modelb$coefficients)
+```
+
+The difference is that in model c, higher education category means larger increase in income while for model b some education categories that are higher than others e.g. grade 19 have less of an impact than lower categories e.g. grade 19 vs grade 17. 
+
+### iii)
+
+```{r}
+anova(modelc,modelb)
+```
+
+We fail to reject the null at the 5% significance level and conclude that the full model with indicators for every grade level is not true i.e. the reduced model with grade clusters is true. 
 
 ## Q2d --- 9 points
 
+### i)
 
+Yes they are since they are ordinal versions of model c. This means that models d and e are special cases of model c where the coefficients of model c are proportional to each other. 
+
+### ii)
+
+```{r}
+print(modelc$coefficients)
+```
+```{r}
+print(modeld$coefficients)
+```
+```{r}
+print(modele$coefficients)
+```
+
+Model c predicts increasing returns to education, where higher education buckets earn more than lower education buckets in increasing increments. model d and e predict constant returns to education, with model e predicting smaller returns for each additional unit of education. 
+
+### iii)
+
+```{r}
+anova(modeld,modelc)
+```
+```{r}
+anova(modele,modelc)
+```
+
+We can conclude that the full model of model c is not true since we fail to reject the null at the 5% significance level against both models. 
 
 ## Q2e --- 4 points
 
@@ -114,4 +220,16 @@ summary(modelb)
 ```{r}
 lm1 = lm(log(Income2005) ~ AFQT + Gender, data=NLSY)
 anova(lm1, modelb)
+```
+
+This is because individually, the education indicators are not significant e.g. if you just added an indicator for grade 7 it would not be significant. However, collectively when you add indicators for each grade level the full model is significantly different than the reduced model without the education indicators. I illustrate this below. 
+
+```{r}
+temp = NLSY %>%
+  mutate(grade7 = ifelse(Edu2006 == 7, 1, 0))
+lm7 = lm(log(Income2005) ~ AFQT + Gender + grade7, data=temp)
+summary(lm7)
+```
+```{r}
+anova(lm1,lm7)
 ```
