@@ -1,0 +1,117 @@
+---
+title: 'STAT 224 Autumn 2022 HW4'
+author: "Matthew Zhao"
+fontsize: 12pt
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+  word_document: default
+header-includes: \usepackage{pdfpages}
+geometry: margin=0.75in
+fig_crop: no
+---
+
+```{r echo=F, include = FALSE}
+library(knitr)
+knitr::opts_chunk$set(fig.width=4, fig.height=3, message=F, warning=F)
+options(width=70, digits=4, scipen=8)
+```
+
+# Question 1
+
+
+[http://www.stat.uchicago.edu/~yibi/s224/data/P151-153.txt](http://www.stat.uchicago.edu/~yibi/s224/data/P151-153.txt)
+
+
+```{r}
+eduexp = read.table("http://www.stat.uchicago.edu/~yibi/s224/data/P151-153.txt", header=T)
+eduexp$region = factor(eduexp$region, labels=c("Northeast","Central","South","West"))
+eduexp$year = as.factor(eduexp$year)
+```
+
+## Q1a --- 4 points
+
+
+
+## Q1b --- 5 points
+
+
+## Q1c --- 5 points
+
+
+
+## Q1d --- 4 points
+
+
+
+# Question 2
+
+
+[http://www.stat.uchicago.edu/~yibi/s224/data/NLSY.txt](http://www.stat.uchicago.edu/~yibi/s224/data/NLSY.txt)
+
+```{r}
+NLSY = read.table("http://www.stat.uchicago.edu/~yibi/s224/data/NLSY.txt", header=T)
+```
+
+
+## Q2a --- 3 points
+
+
+
+**Model A**: 
+```{r}
+modela = lm(log(Income2005) ~ AFQT + Gender + Edu2006, data=NLSY)
+```
+
+**Model B**: 
+```{r}
+modelb = lm(log(Income2005) ~ AFQT + Gender + as.factor(Edu2006), data=NLSY)
+```
+
+**Model C**: 
+```{r}
+NLSY$edu5grps = cut(NLSY$Edu2006, c(5.5,11.5,12.5,15.5,16.5,20.5))
+NLSY$edu5grps = 
+  factor(NLSY$edu5grps,
+         labels=c("6-11", "12", "13-15", "16", "17+"))
+modelc = lm(log(Income2005) ~ AFQT + Gender + edu5grps, data=NLSY)
+```
+
+**Model D**
+
+```{r}
+NLSY$eduscore1 = as.numeric(NLSY$edu5grps)
+modeld = lm(log(Income2005) ~ AFQT + Gender + eduscore1, data=NLSY)
+```
+
+**Model E**
+```{r}
+conversion = c("6-11"=9, "12"=12, "13-15"=13, "16"=16, "17+"=17)
+NLSY$eduscore2 = conversion[NLSY$edu5grps]
+modele = lm(log(Income2005) ~ AFQT + Gender + eduscore2, data=NLSY)
+```
+
+## Q2b --- 8 points
+
+
+
+## Q2c --- 8 points
+
+
+
+## Q2d --- 9 points
+
+
+
+## Q2e --- 4 points
+
+
+```{r}
+summary(modelb)
+```
+
+```{r}
+lm1 = lm(log(Income2005) ~ AFQT + Gender, data=NLSY)
+anova(lm1, modelb)
+```
