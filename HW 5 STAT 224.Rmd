@@ -1,0 +1,190 @@
+---
+title: 'STAT 224 Autumn 2022 HW5'
+author: "Matthew Zhao"
+fontsize: 12pt
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+  word_document: default
+header-includes: \usepackage{pdfpages}
+geometry: margin=0.5in
+fig_crop: no
+---
+
+```{r echo=F, include = FALSE}
+library(knitr)
+library(ggplot2)
+knitr::opts_chunk$set(fig.width=4, fig.height=3, message=F, warning=F, collapse=TRUE)
+options(width=70, digits=4, scipen=8)
+options(show.signif.stars = FALSE) # Show no stars for significance tests
+```
+
+
+# Question 1
+
+http://www.stat.uchicago.edu/~yibi/s224/data/mammals.txt
+
+```{r}
+mammals = read.table("http://www.stat.uchicago.edu/~yibi/s224/data/mammals.txt", header=T)
+```
+
+## Q1a --- 4 points
+
+```{r, fig.width= 4.5, fig.height=4.5, fig.show='hold', out.width=c('50%','50%')}
+pairs(~Brain+Body+Gestation+Litter, data=mammals, gap=1/10, oma=c(2,2,2,2))
+pairs(~log(Brain)+log(Body)+Gestation+Litter, data=mammals, gap=1/10, oma=c(2,2,2,2))
+# gap = 1/10 reduces the gaps between plots to 1/10 of the default gap width
+# oma=c(2,2,2,2) reduces the margins of the plot
+```
+
+
+## Q1b --- 4 points
+
+
+```{r}
+# Model 0
+mod0 = lm(Brain ~ Body, data=mammals)
+# Model 1
+mod1 = lm(log(Brain)~log(Body), data=mammals)
+```
+
+
+```{r}
+plot(hatvalues(mod0), ylab="Leverage of Model 0")
+plot(hatvalues(mod1), ylab="Leverage of Model 1")
+```
+
+## Q1c --- 4 points
+
+
+
+## Q1d --- 6 points
+
+
+```{r}
+# Model 2
+mod2 = lm(log(Brain) ~ log(Body) + Gestation, data=mammals)
+```
+```{r}
+library(car)
+crPlots(mod2, "Gestation")
+```
+
+```{r}
+# Model 3
+mod3 = lm(log(Brain) ~ log(Body) + log(Gestation), data=mammals)
+```
+
+
+
+## Q1e --- 6 points
+
+
+```{r}
+# Model 4
+mod4 = lm(log(Brain) ~ log(Body) + log(Gestation) + log(Litter), data=mammals)
+```
+
+
+```{r}
+avPlots(mod4,"log(Litter)")
+```
+
+
+
+# Question 2
+
+[http://www.stat.uchicago.edu/~yibi/s224/data/P151-153.txt](http://www.stat.uchicago.edu/~yibi/s224/data/P151-153.txt)
+
+```{r}
+eduexp = read.table("http://www.stat.uchicago.edu/~yibi/s224/data/P151-153.txt", header=T)
+eduexp$region = factor(eduexp$region, labels=c("Northeast","Central","South","West"))
+eduexp$year = as.factor(eduexp$year)
+lm1 = lm(y ~ x1*(year+region), data=eduexp)
+```
+
+## Q2a --- 4 points
+
+
+
+## Q2b --- 3 points
+
+```{r, message=FALSE, echo=FALSE, fig.width=2.5, fig.height=2.25, fig.show='hold', out.width=c('45%','45%')}
+par(mai=c(.6,.6,.3,.01),mgp=c(1.8,.7,0))
+qqnorm(lm1$res, ylab="Residuals")
+qqline(lm1$res)
+qqnorm(rstudent(lm1), ylab="Studentized Residuals")
+qqline(rstudent(lm1))
+```
+
+
+## Q2c --- 3 points
+
+```{r}
+library(MASS)
+boxcox(lm1)
+```
+
+## Q2d --- 4 points
+
+```{r}
+lm2 = lm(log(y) ~ x1*(year+region), data=eduexp)
+```
+
+
+
+# Question 3
+
+
+## Q3a --- 4 points
+
+```{r}
+lm3 = lm(y ~ x2*(year+region), data=eduexp)
+lm4 = lm(log(y) ~ x2*(year+region), data=eduexp)
+```
+
+
+## Q3b --- 4 points
+
+```{r, fig.width=5, fig.height=3, out.width='55%'}
+library(ggplot2)
+ggplot(eduexp, aes(x=rstudent(lm3), y=hatvalues(lm3), label=state, color=year)) + 
+  geom_text() +
+  labs(x = "Studentized Residuals", y = "Leverage") +
+  geom_hline(yintercept = 2*12/150)
+```
+
+```{r, fig.width=5, fig.height=3, out.width='55%'}
+ggplot(eduexp, aes(x=hatvalues(lm3), y=cooks.distance(lm3), label=state, color=year)) + 
+  geom_text() +
+  labs(x = "Leverage", y = "Cook's Distance") 
+```
+
+
+```{r, fig.width=6.5, fig.height=4, out.width='80%'}
+ggplot(eduexp, aes(x = x2, y = y, color=year, label=state, size=hatvalues(lm3))) +
+  geom_text() +
+  facet_wrap(~region) +
+  xlab("# Under 18 Per 1000") +
+  ylab("Education Expenditure") 
+```
+```{r, fig.width=8, fig.height=4, out.width='100%'}
+ggplot(eduexp, aes(x = x2, y = y, color=year, label=state, size=cooks.distance(lm3))) +
+  geom_text() +
+  facet_wrap(~region) +
+  xlab("# Under 18 Per 1000") +
+  ylab("Education Expenditure") 
+```
+
+## Q3c --- 4 points
+
+
+```{r, fig.width=4, fig.height=3.5, fig.show='hold', out.width=c('49%','49%')}
+ggplot(eduexp, aes(x=rstudent(lm4), y=hatvalues(lm4), label=state, color=year)) + 
+  geom_text() + geom_hline(yintercept = 2*12/150) +
+  labs(x = "Studentized Residuals", y = "Leverage") +
+  geom_hline(yintercept = 2*12/150) + theme(legend.position="top")
+ggplot(eduexp, aes(x=hatvalues(lm4), y=cooks.distance(lm4), label=state, color=year)) + 
+  geom_text() + labs(x = "Leverage", y = "Cook's Distance") + theme(legend.position="top")
+```
