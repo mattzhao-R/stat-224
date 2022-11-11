@@ -38,6 +38,7 @@ pairs(~log(Brain)+log(Body)+Gestation+Litter, data=mammals, gap=1/10, oma=c(2,2,
 # oma=c(2,2,2,2) reduces the margins of the plot
 ```
 
+Through the scatterplots, we see evidence of nonlinearity in Brain and Body, suggesting that log transformation may be appropriate to solve this issue.
 
 ## Q1b --- 4 points
 
@@ -55,9 +56,28 @@ plot(hatvalues(mod0), ylab="Leverage of Model 0")
 plot(hatvalues(mod1), ylab="Leverage of Model 1")
 ```
 
+
+```{r}
+plot(cooks.distance(mod0), ylab="Cooks Distance of Model 0")
+plot(cooks.distance(mod1), ylab="Cooks Distance of Model 1")
+```
+
+The African Elephant and the Hippopotamus have large leverages in model 0 at 0.7 and 0.1723 respectively and also have large cook's distances at 30.6 and 3.462. After log transformation, the magnitudes of these decrease to be roughly in line with those of other points.
+
 ## Q1c --- 4 points
 
+```{r}
+ggplot(data=mammals) + 
+  geom_point(aes(x=Gestation,y=mod1$res)) + 
+  xlab('Gestation Length') + ylab('Model 1 Residuals') + 
+  geom_hline(yintercept = 0, col = 2)
+ggplot(data=mammals) + 
+  geom_point(aes(x=log(Gestation),y=mod1$res)) + 
+  xlab('Gestation Length') + ylab('Model 1 Residuals') + 
+  geom_hline(yintercept = 0, col = 2)
+```
 
+Yes gestation legnth appears to have an effect on mammal brain weight after accounting for mammal body size since the residuals of model 1 appear to increase with gestation and log gestation. It is better to use log gestation since the values are more spread out, improving the model.
 
 ## Q1d --- 6 points
 
@@ -65,6 +85,10 @@ plot(hatvalues(mod1), ylab="Leverage of Model 1")
 ```{r}
 # Model 2
 mod2 = lm(log(Brain) ~ log(Body) + Gestation, data=mammals)
+ggplot(data=mammals,aes(x=Gestation,y=mod2$res+mod2$coefficients[3]*Gestation)) +
+  geom_point() + geom_smooth(method='lm') + 
+  geom_smooth(method='loess',col=2)+
+  labs(x="Gestation length",y="Residual+Component")
 ```
 ```{r}
 library(car)
@@ -74,9 +98,14 @@ crPlots(mod2, "Gestation")
 ```{r}
 # Model 3
 mod3 = lm(log(Brain) ~ log(Body) + log(Gestation), data=mammals)
+ggplot(data=mammals,aes(x=log(Gestation),y=mod3$res+mod3$coefficients[3]*log(Gestation))) +
+  geom_point() + geom_smooth(method='lm') + 
+  geom_smooth(method='loess',col=2)+
+  labs(x="log(Gestation)",y="Residual+Component")
+crPlots(mod3, "log(Gestation)")
 ```
 
-
+log(Gestation) since Gestation appears to be nonlinear. 
 
 ## Q1e --- 6 points
 
@@ -85,13 +114,19 @@ mod3 = lm(log(Brain) ~ log(Body) + log(Gestation), data=mammals)
 # Model 4
 mod4 = lm(log(Brain) ~ log(Body) + log(Gestation) + log(Litter), data=mammals)
 ```
-
+```{r}
+r1 = lm(log(Brain) ~ log(Body) + log(Gestation), data=mammals)$res
+r2 = lm(log(Litter) ~ log(Body) + log(Gestation), data=mammals)$res
+ggplot(data.frame(r1,r2),aes(x=r2,y=r1)) + 
+  geom_point() + geom_smooth(method='lm') + 
+  labs(x='log(Litter)-residuals',y='log(Brain)-residuals')
+```
 
 ```{r}
 avPlots(mod4,"log(Litter)")
 ```
 
-
+Dolphin, Human being, Nutria, Quokka
 
 # Question 2
 
