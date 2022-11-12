@@ -126,7 +126,14 @@ ggplot(data.frame(r1,r2),aes(x=r2,y=r1)) +
 avPlots(mod4,"log(Litter)")
 ```
 
-Dolphin, Human being, Nutria, Quokka
+Nutria and Quokka have high leverage while Dolphin and Human being have high residuals.
+
+```{r}
+ggplot(data=mammals,aes(x=log(Body),y=log(Brain),color=log(Litter))) + 
+   geom_point()
+plot(cooks.distance(mod4), ylab="Cooks Distance of Model 4")
+plot(mod4$residuals, ylab="Residuals of Model 4")
+```
 
 # Question 2
 
@@ -141,7 +148,14 @@ lm1 = lm(y ~ x1*(year+region), data=eduexp)
 
 ## Q2a --- 4 points
 
+```{r}
+ggplot(data=eduexp,aes(x=lm1$fitted.values,y=rstudent(lm1))) + 
+  geom_point() + 
+  xlab('Fitted Values') + ylab('Studentized Residuals') + 
+  geom_hline(yintercept = 0, col = 2)
+```
 
+It appears that the errors are correlated with the fitted values, specifically residuals increase with fitted values. This means nonconstant variance in the errors. 
 
 ## Q2b --- 3 points
 
@@ -153,6 +167,7 @@ qqnorm(rstudent(lm1), ylab="Studentized Residuals")
 qqline(rstudent(lm1))
 ```
 
+The residuals are somewhat right skewed. 
 
 ## Q2c --- 3 points
 
@@ -161,13 +176,30 @@ library(MASS)
 boxcox(lm1)
 ```
 
+Since 0 falls within the 95% confidence interval for $\lambda$, log transformation is most appropriate. 
+
 ## Q2d --- 4 points
 
 ```{r}
 lm2 = lm(log(y) ~ x1*(year+region), data=eduexp)
 ```
 
+```{r}
+ggplot(data=eduexp,aes(x=lm2$fitted.values,y=rstudent(lm2))) + 
+  geom_point() + 
+  xlab('Fitted Values') + ylab('Studentized Residuals') + 
+  geom_hline(yintercept = 0, col = 2)
+```
 
+```{r, message=FALSE, echo=FALSE, fig.width=2.5, fig.height=2.25, fig.show='hold', out.width=c('45%','45%')}
+par(mai=c(.6,.6,.3,.01),mgp=c(1.8,.7,0))
+qqnorm(lm2$res, ylab="Residuals")
+qqline(lm2$res)
+qqnorm(rstudent(lm2), ylab="Studentized Residuals")
+qqline(rstudent(lm2))
+```
+
+Model assumptions are no longer violated. 
 
 # Question 3
 
@@ -179,6 +211,18 @@ lm3 = lm(y ~ x2*(year+region), data=eduexp)
 lm4 = lm(log(y) ~ x2*(year+region), data=eduexp)
 ```
 
+```{r}
+ggplot(data=eduexp,aes(x=lm3$fitted.values,y=rstudent(lm3))) + 
+  geom_point() + 
+  xlab('Fitted Values') + ylab('Studentized Residuals') + 
+  geom_hline(yintercept = 0, col = 2)
+ggplot(data=eduexp,aes(x=lm4$fitted.values,y=rstudent(lm4))) + 
+  geom_point() + 
+  xlab('Fitted Values') + ylab('Studentized Residuals') + 
+  geom_hline(yintercept = 0, col = 2)
+```
+
+We use log transformation because we see nonconstant variance in the residuals vs fitted values plot with residuals increasing with fitted values. 
 
 ## Q3b --- 4 points
 
@@ -196,6 +240,7 @@ ggplot(eduexp, aes(x=hatvalues(lm3), y=cooks.distance(lm3), label=state, color=y
   labs(x = "Leverage", y = "Cook's Distance") 
 ```
 
+Alaska has the largest studentized residual in 1975. Alabama had the largest leverage in 1960. 
 
 ```{r, fig.width=6.5, fig.height=4, out.width='80%'}
 ggplot(eduexp, aes(x = x2, y = y, color=year, label=state, size=hatvalues(lm3))) +
@@ -212,6 +257,8 @@ ggplot(eduexp, aes(x = x2, y = y, color=year, label=state, size=cooks.distance(l
   ylab("Education Expenditure") 
 ```
 
+Yes, they are influential since they represent a value with high x value compared with the other observations. The influential points have large cooks distance. 
+
 ## Q3c --- 4 points
 
 
@@ -223,3 +270,6 @@ ggplot(eduexp, aes(x=rstudent(lm4), y=hatvalues(lm4), label=state, color=year)) 
 ggplot(eduexp, aes(x=hatvalues(lm4), y=cooks.distance(lm4), label=state, color=year)) + 
   geom_text() + labs(x = "Leverage", y = "Cook's Distance") + theme(legend.position="top")
 ```
+
+The leverage is roughly similar while the Cooks distance is significantly less. The points become less influential. 
+

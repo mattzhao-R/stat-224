@@ -1,0 +1,82 @@
+---
+title: "Autumn 2022 STAT 22400 Take-Home Midterm"
+author: "Matthew Zhao"
+output: pdf_document
+geometry: margin = .5in
+fontsize: 12pt
+header-includes: \usepackage{pdfpages}
+fig_crop: no
+---
+
+```{r echo=F}
+library(knitr)
+knitr::opts_chunk$set(message=F, warning=F, collapse=T, tidy=T, tidy.opts=list(width.cutoff = 65))
+options(scipen=6, digits=4)
+
+ggplot2::theme_set(ggplot2::theme_bw())
+ggplot2::theme_update(panel.grid.major = ggplot2::element_line(colour = "grey75"))
+```
+
+# Question 1
+
+```{r}
+sara = read.table("http://www.stat.uchicago.edu/~yibi/s224/data/sara.txt", sep="\t", header=TRUE)
+```
+
+```{r}
+modA = lm(log(price) ~ log(livingArea) + bathrooms + centralAir, data=sara)
+modB = lm(log(price) ~ log(livingArea) + BATH + centralAir, data=sara)
+modC = lm(log(price) ~ log(livingArea) + BATH2 + centralAir, data=sara)
+```
+
+## Q1A --- 6 points
+
+
+
+## Q1B --- 6 points
+
+
+
+## Q1C --- 6 points
+
+
+
+## Q1D --- 6 points
+
+
+
+## Q1E --- 6 points
+
+
+
+# Question 2
+
+```{r}
+mammals = read.table("http://www.stat.uchicago.edu/~yibi/s224/data/mammalslife.txt", sep="\t", header=TRUE)
+```
+
+## Q2A --- 6 points
+
+```{r}
+lm2a = lm(log(Metab) ~ log(Mass), data=mammals)
+```
+
+
+
+## Q2B --- 7 points
+
+```{r}
+lm2b = lm(log(Life) ~ log(Mass) + log(Metab), data=mammals)
+```
+
+
+
+## Q2C --- 7 points
+
+```{r}
+lm2b = lm(log(Life) ~ log(Mass) + log(Metab), data=mammals)
+lm2b$coef
+lm2c = lm(log(Life) ~ log(Metab), data=mammals)
+lm2c$coef
+```
+
