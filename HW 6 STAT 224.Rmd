@@ -1,0 +1,151 @@
+---
+title: 'STAT 224 Autumn 2022 HW6'
+author: "Matthew Zhao"
+fontsize: 12pt
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+  word_document: default
+header-includes: \usepackage{pdfpages}
+geometry: margin=0.5in
+fig_crop: no
+---
+
+```{r echo=F, include = FALSE}
+library(knitr)
+library(ggplot2)
+knitr::opts_chunk$set(fig.width=4, fig.height=3, message=F, warning=F, collapse=TRUE)
+options(width=70, digits=4, scipen=8)
+options(show.signif.stars = FALSE) # Show no stars for significance tests
+```
+
+# Question 1
+
+http://www.stat.uchicago.edu/~yibi/s224/data/brake.txt
+
+```{r load-brake}
+brake = read.table("http://www.stat.uchicago.edu/~yibi/s224/data/brake.txt", header=T)
+```
+
+## Q1a --- 3 points
+
+```{r}
+ols1 = lm(distance ~ speed + I(speed^2), data=brake)
+```
+
+
+## Q1b --- 3 points
+
+
+```{r}
+ols2 = lm(sqrt(distance) ~ speed + I(speed^2), data=brake)
+ols3 = lm(log(distance) ~ speed + I(speed^2), data=brake)
+```
+
+
+## Q1c --- 2 points
+
+
+```{r}
+library(MASS)
+boxcox(ols1)
+abline(v=1/2, col="red") 
+```
+
+
+## Q1d --- 2 points
+
+```{r, fig.width=2.5, fig.height=2.5}
+predCI = predict(ols1, data.frame(speed = 4:40), interval="prediction")
+predCI = data.frame(x=4:40,predCI)
+ggplot() +
+  geom_ribbon(data=predCI, aes(x=x, ymin=lwr, ymax = upr), alpha=0.25) +
+  geom_line(data=predCI, aes(x=x,y = fit),col="blue",lwd=1) +
+  geom_point(data=brake, aes(x=speed, y=distance)) +
+  labs(x="Auto Speed (mph)", y="Distance Until Stop (ft.)")
+```
+
+```{r, eval=FALSE}
+predCI = predict(ols2, data.frame(speed = 4:40), interval="prediction")^2
+```
+
+```{r, eval=FALSE}
+predCI = exp(predict(ols3, data.frame(speed = 4:40), interval="prediction"))
+```
+
+
+## Q1e --- 4 points
+
+
+
+## Q1f --- 3 points
+
+
+
+# Question 2
+
+
+## Q2a --- 4 points
+
+
+```{r}
+wls1 = lm(distance ~ speed + I(speed^2), data=brake, weight=1/speed)
+wls2 = lm(distance ~ speed + I(speed^2), data=brake, weight=1/speed^2)
+```
+
+
+
+## Q2b --- 2 points
+
+
+
+# Question 3
+
+
+http://www.stat.uchicago.edu/~yibi/s224/data/fatherson.txt
+
+```{r}
+fatherson = read.table("http://www.stat.uchicago.edu/~yibi/s224/data/fatherson.txt", h=T)
+```
+
+
+## Q3a --- 3 points
+
+
+```{r}
+lm1 = lm(Aver.Height.Son ~ Height.Father, data=fatherson)
+```
+
+## Q3b --- 6 points
+
+
+
+## Q3c --- 2 points
+
+
+
+# Question 4
+
+
+http://www.stat.uchicago.edu/~yibi/s224/data/P229-30.txt
+
+```{r}
+stock = read.table("http://www.stat.uchicago.edu/~yibi/s224/data/P229-30.txt", header=T)
+```
+
+
+## Q4a --- 8 points
+
+```{r}
+stock1 = lm(DJIA ~ Day, data=stock)
+```
+
+
+## Q4b --- 8 points
+
+```{r}
+stock2 = lm(DJIA[2:262] ~ DJIA[1:261], data=stock)
+```
+
+
