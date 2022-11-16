@@ -54,6 +54,8 @@ ggplot(data=brake,aes(x=ols3$fitted.values,y=ols3$residuals)) +
   geom_point() + labs(x='fitted values',y='raw residuals')
 ```
 
+Square-root appears to be the most appropriate transformation since this transformation results in near constant variance based on the residual plots. 
+
 ## Q1c --- 2 points
 
 
@@ -63,6 +65,7 @@ boxcox(ols1)
 abline(v=1/2, col="red") 
 ```
 
+Since $\frac{1}{2}$ falls within the 95% CI, squart root is the most appropriate transformation. 
 
 ## Q1d --- 2 points
 
@@ -76,22 +79,52 @@ ggplot() +
   labs(x="Auto Speed (mph)", y="Distance Until Stop (ft.)")
 ```
 
-```{r, eval=FALSE}
+```{r, fig.width=2.5, fig.height=2.5}
 predCI = predict(ols2, data.frame(speed = 4:40), interval="prediction")^2
+predCI = data.frame(x=4:40,predCI)
+ggplot() +
+  geom_ribbon(data=predCI, aes(x=x, ymin=lwr, ymax = upr), alpha=0.25) +
+  geom_line(data=predCI, aes(x=x,y = fit),col="blue",lwd=1) +
+  geom_point(data=brake, aes(x=speed, y=distance)) +
+  labs(x="Auto Speed (mph)", y="Distance Until Stop (ft.)")
 ```
 
-```{r, eval=FALSE}
+```{r, fig.width=2.5, fig.height=2.5}
 predCI = exp(predict(ols3, data.frame(speed = 4:40), interval="prediction"))
+predCI = data.frame(x=4:40,predCI)
+ggplot() +
+  geom_ribbon(data=predCI, aes(x=x, ymin=lwr, ymax = upr), alpha=0.25) +
+  geom_line(data=predCI, aes(x=x,y = fit),col="blue",lwd=1) +
+  geom_point(data=brake, aes(x=speed, y=distance)) +
+  labs(x="Auto Speed (mph)", y="Distance Until Stop (ft.)")
 ```
+
+The prediction band for ols2 best matches the pattern of the data. 
 
 
 ## Q1e --- 4 points
 
+```{r}
+summary(ols2)
+```
 
+It is not significant. 
+
+```{r}
+ols2_nosquare = lm(sqrt(distance) ~ speed, data=brake)
+boxcox(ols2_nosquare)
+library(car)
+crPlots(ols2_nosquare,'speed')
+```
+
+The 95% CI for box-cox contains 1 indicating that no further transformation is needed. Additionally we see no signs of nonlinearity via the residual plus component plot for our only covariate speed. 
 
 ## Q1f --- 3 points
 
-
+```{r}
+predCI = predict(ols2, data.frame(speed = seq(10,30,10)), interval="prediction")^2
+data.frame(speed=seq(10,30,10),predCI)
+```
 
 # Question 2
 
@@ -103,12 +136,27 @@ predCI = exp(predict(ols3, data.frame(speed = 4:40), interval="prediction"))
 wls1 = lm(distance ~ speed + I(speed^2), data=brake, weight=1/speed)
 wls2 = lm(distance ~ speed + I(speed^2), data=brake, weight=1/speed^2)
 ```
+```{r}
+ggplot(data=brake,aes(x=speed,y=rstandard(wls1))) + 
+  geom_point() + 
+  labs(x='speed',y='raw residuals')
+ggplot(data=brake,aes(x=speed,y=rstandard(wls2))) + 
+  geom_point() + 
+  labs(x='speed',y='raw residuals')
+ggplot(data=brake,aes(x=speed,y=rstudent(wls2))) + 
+  geom_point() + 
+  labs(x='speed',y='raw residuals')
 
+```
 
+We should use the standardized (internally standardized) residuals for model 2. 
 
 ## Q2b --- 2 points
 
-
+```{r}
+predCI = predict(wls2, data.frame(speed = seq(10,30,10)), interval="prediction")
+data.frame(speed=seq(10,30,10),predCI)
+```
 
 # Question 3
 
