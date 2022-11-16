@@ -175,9 +175,26 @@ fatherson = read.table("http://www.stat.uchicago.edu/~yibi/s224/data/fatherson.t
 lm1 = lm(Aver.Height.Son ~ Height.Father, data=fatherson)
 ```
 
+```{r}
+ggplot(data=fatherson,aes(x=lm1$fitted.values,y=lm1$residuals)) + 
+  geom_point() + 
+  labs(x='fitted values',y='raw residuals')
+crPlots(lm1,'Height.Father')
+boxcox(lm1)
+```
+
+OLS is not appropriate since the residual plot reveals that nonconstant variance is violated. Additionally, boxcox shows that there are no ideal transformations of the response to solve this issue since many $\lambda$s fall within the 95% CI.
+
 ## Q3b --- 6 points
 
-
+```{r}
+wls3 = lm(Aver.Height.Son ~ Height.Father, data=fatherson,
+          weight=1/(Height.Father^(1/2)))
+summary(wls3)
+ggplot(data = fatherson,aes(x=Height.Father,y=rstandard(wls3))) + 
+  geom_point() + labs(x='Father Height',y='standardized residuals') + 
+  geom_hline(yintercept = 0)
+```
 
 ## Q3c --- 2 points
 
@@ -199,6 +216,19 @@ stock = read.table("http://www.stat.uchicago.edu/~yibi/s224/data/P229-30.txt", h
 stock1 = lm(DJIA ~ Day, data=stock)
 ```
 
+```{r}
+ggplot(data=stock,aes(x=Day,y=DJIA)) + 
+  geom_point() + labs(x='Day',y='DJIA Index')
+ggplot(data=stock,aes(x=Day,y=stock1$residuals)) + 
+  geom_line() + labs(x='Time (day)','Raw Residuals') + 
+  geom_hline(yintercept = 0)
+library(tseries)
+runs.test(factor(stock1$residuals > 0))
+durbinWatsonTest(stock1)
+acf(stock1$residuals)
+```
+
+The model does exhibit time dependencies based on the number of runs and small p values for the runs test, durbin watson test, and autocorrelation plot.
 
 ## Q4b --- 8 points
 
@@ -206,4 +236,15 @@ stock1 = lm(DJIA ~ Day, data=stock)
 stock2 = lm(DJIA[2:262] ~ DJIA[1:261], data=stock)
 ```
 
+```{r}
+ggplot(mapping=aes(x=stock$Day[1:261],y=stock2$residuals)) + 
+  geom_line() + labs(x='Time (day)','Raw Residuals') + 
+  geom_hline(yintercept = 0)
+library(tseries)
+runs.test(factor(stock2$residuals > 0))
+durbinWatsonTest(stock2)
+acf(stock2$residuals)
+```
+
+There is no longer any evidence of autocorrelation in the residuals. 
 
