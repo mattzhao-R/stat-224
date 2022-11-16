@@ -32,8 +32,13 @@ brake = read.table("http://www.stat.uchicago.edu/~yibi/s224/data/brake.txt", hea
 
 ```{r}
 ols1 = lm(distance ~ speed + I(speed^2), data=brake)
+ggplot(data=brake,aes(x=speed,y=distance)) + 
+  geom_point() + labs(x='speed of car (mph)',y='distance to stop (ft)')
+ggplot(data=brake,aes(x=ols1$fitted.values,y=ols1$residuals)) + 
+  geom_point() + labs(x='fitted values',y='raw residuals')
 ```
 
+Yes, there is clearly nonconstant variance. 
 
 ## Q1b --- 3 points
 
@@ -42,7 +47,12 @@ ols1 = lm(distance ~ speed + I(speed^2), data=brake)
 ols2 = lm(sqrt(distance) ~ speed + I(speed^2), data=brake)
 ols3 = lm(log(distance) ~ speed + I(speed^2), data=brake)
 ```
-
+```{r}
+ggplot(data=brake,aes(x=ols2$fitted.values,y=ols2$residuals)) + 
+  geom_point() + labs(x='fitted values',y='raw residuals')
+ggplot(data=brake,aes(x=ols3$fitted.values,y=ols3$residuals)) + 
+  geom_point() + labs(x='fitted values',y='raw residuals')
+```
 
 ## Q1c --- 2 points
 
