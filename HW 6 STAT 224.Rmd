@@ -149,7 +149,7 @@ ggplot(data=brake,aes(x=speed,y=rstudent(wls2))) +
 
 ```
 
-We should use the standardized (internally standardized) residuals for model 2. 
+We should use the standardized (internally standardized) residuals for model 2 since model 2 resolves nonconstant variance. 
 
 ## Q2b --- 2 points
 
@@ -189,7 +189,7 @@ OLS is not appropriate since the residual plot reveals that nonconstant variance
 
 ```{r}
 wls3 = lm(Aver.Height.Son ~ Height.Father, data=fatherson,
-          weight=1/(Height.Father^(1/2)))
+          weight=1/(Height.Father^2))
 summary(wls3)
 ggplot(data = fatherson,aes(x=Height.Father,y=rstandard(wls3))) + 
   geom_point() + labs(x='Father Height',y='standardized residuals') + 
@@ -198,7 +198,10 @@ ggplot(data = fatherson,aes(x=Height.Father,y=rstandard(wls3))) +
 
 ## Q3c --- 2 points
 
-
+```{r}
+predict(wls3, data.frame(Height.Father=70), weights=1/Height.Father^2,
+interval="confidence")
+```
 
 # Question 4
 
@@ -220,7 +223,8 @@ stock1 = lm(DJIA ~ Day, data=stock)
 ggplot(data=stock,aes(x=Day,y=DJIA)) + 
   geom_point() + labs(x='Day',y='DJIA Index')
 ggplot(data=stock,aes(x=Day,y=stock1$residuals)) + 
-  geom_line() + labs(x='Time (day)','Raw Residuals') + 
+  geom_line() + geom_point()+
+  labs(x='Time (day)','Raw Residuals') + 
   geom_hline(yintercept = 0)
 library(tseries)
 runs.test(factor(stock1$residuals > 0))
@@ -242,7 +246,7 @@ ggplot(mapping=aes(x=stock$Day[1:261],y=stock2$residuals)) +
   geom_hline(yintercept = 0)
 library(tseries)
 runs.test(factor(stock2$residuals > 0))
-durbinWatsonTest(stock2)
+durbinWatsonTest(stock2,alternative = 'negative')
 acf(stock2$residuals)
 ```
 
