@@ -1,0 +1,176 @@
+---
+title: 'STAT 224 Autumn 2022 HW7'
+author: "Matthew Zhao"
+fontsize: 12pt
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+  word_document: default
+header-includes: \usepackage{pdfpages}
+geometry: margin=0.5in
+fig_crop: no
+---
+
+```{r echo=F, include = FALSE}
+library(knitr)
+library(ggplot2)
+knitr::opts_chunk$set(fig.width=4, fig.height=3, message=F, warning=F, collapse=TRUE)
+options(width=70, digits=5, scipen=8)
+options(show.signif.stars = FALSE) # Show no stars for significance tests
+```
+
+# Question 1
+
+http://www.stat.uchicago.edu/~yibi/s224/data/P229-30.txt
+
+```{r}
+stock = read.table("P229-30.txt", header=T)
+```
+
+## Q1a --- 4 points
+
+```{r}
+stock1 = lm(DJIA ~ Day, data=stock)
+```
+
+## Q1b --- 2 points
+
+
+
+## Q1c --- 6 points
+
+
+
+## Q1d --- 3 points
+
+
+
+# Question 2
+
+http://www.stat.uchicago.edu/~yibi/s224/data/globalwarm.txt
+
+```{r, message=FALSE, fig.width=6, fig.height=2, out.width='100%'}
+gw = read.table("globalwarm.txt", header=T)
+```
+
+```{r}
+gwlm1 = lm(Temperature ~ Year + I(Year^2), data=gw)
+```
+
+## Q2a --- 3 points
+
+```{r, fig.width=7, fig.height=2}
+lag.plot(gwlm1$res, lag=4, layout=c(1,4))
+```
+
+```{r}
+acf(gwlm1$res)
+```
+
+## Q2b --- 4 points
+
+
+
+
+## Q2c --- 6 points
+
+
+
+# Question 3
+
+http://www.stat.uchicago.edu/~yibi/s224/data/skincancer.txt
+
+
+```{r}
+skincancer = read.table("skincancer.txt", header=T)
+```
+
+## Q3a --- 6 points
+
+```{r}
+model2 = lm(sqrt(Melanoma) ~ Year, data=skincancer)
+```
+
+
+
+## Q3b --- 6 points
+
+
+$$
+\sqrt{\text{Melanoma}_t}=\beta_0+\beta_1\text{Year}_t+
+\beta_2\sqrt{\text{Sunspot}_{t}}+
+\beta_3\sqrt{\text{Sunspot}_{t-1}}+
+\beta_4\sqrt{\text{Sunspot}_{t-2}}+
+\varepsilon_t 
+$$
+```{r}
+model3 = lm(sqrt(Melanoma[3:37]) ~ Year[3:37] + sqrt(Sunspot[3:37]) +
+              sqrt(Sunspot[2:36]) + sqrt(Sunspot[1:35]), data=skincancer)
+```
+
+
+
+# Question 4
+
+http://www.stat.uchicago.edu/~yibi/s224/data/food.txt
+
+```{r}
+food = read.table("food.txt", h = T)
+```
+
+## Q4a --- 3 points
+
+```{r}
+lmfood = lm(log(V)~log(K)+log(L)+YEAR, data=food)
+```
+
+
+```{r, fig.width=4, fig.height=4}
+panel.cor <- function(x, y, digits = 3, prefix = "", cex.cor, ...)
+{
+    usr <- par("usr"); on.exit(par(usr))
+    par(usr = c(0, 1, 0, 1))
+    text(0.5, 0.5, round(cor(x,y),digits))
+}
+pairs(log(V)~log(K)+log(L)+YEAR, data=food,
+      gap=0,oma=c(2,2,2,2), lower.panel = panel.cor)
+```
+
+## Q4b --- 3 points
+
+```{r}
+summary(lm(log(V)~log(K)+log(L)+YEAR, data=food))$coef
+summary(lm(log(V)~log(K)+log(L), data=food))$coef
+summary(lm(log(V)~log(K)+YEAR, data=food))$coef
+```
+
+
+# Question 5
+
+http://www.stat.uchicago.edu/~yibi/s224/data/fevdata.txt,
+
+```{r}
+fevdata = read.table("fevdata.txt", header = TRUE)
+fevdata$sex = factor(fevdata$sex, labels=c("Female","Male"))
+fevdata$smoke = factor(fevdata$smoke, labels=c("Nonsmoker","Smoker"))
+```
+
+## Q5a --- 2 points
+
+```{r}
+m.nonsmokers = subset(fevdata, sex=="Male" & smoke=="Nonsmoker")
+mod1 = lm(log(fev) ~ ht, data=m.nonsmokers)
+mod2 = lm(log(fev) ~ ht + I(ht^2), data=m.nonsmokers)
+summary(mod1)$coef
+summary(mod2)$coef
+```
+
+
+## Q5b --- 2 points
+
+
+```{r, eval=FALSE}
+mod3 = lm(log(fev) ~ ht + I((ht-60)^2), data=m.nonsmokers)
+summary(mod3)$coef
+```
