@@ -74,13 +74,32 @@ ggplot(mapping = aes(x=x_star,y=y_star)) +
   labs(x='x star',y='y star', title = 'Checking Model Assumptions')
 ```
 
+We do not see any violation of assumptions.
+
 ## Q1c --- 6 points
 
-
+```{r, warning=FALSE}
+lm_star = lm(y_star ~ x_star)
+ggplot(mapping=aes(x=x_star,y=lm_star$residuals)) + 
+  geom_line() + geom_point()+
+  labs(x='Time (day)','Raw Residuals') + 
+  geom_hline(yintercept = 0)
+library(tseries)
+library(car)
+runs.test(factor(lm_star$residuals > 0))
+durbinWatsonTest(lm_star)
+acf(lm_star$residuals)
+```
 
 ## Q1d --- 3 points
 
+We should use lm(ystar ~ xstar) since this model does not violate any SLR assumptions compared to the lm(DJIA ~ Day) model as we saw in HW 6. 
 
+```{r}
+confint(lm_star)
+```
+
+95% CI for $\beta_1$: (1.8595,6.6711)
 
 # Question 2
 
@@ -104,14 +123,64 @@ lag.plot(gwlm1$res, lag=4, layout=c(1,4))
 acf(gwlm1$res)
 ```
 
+We conclude that there is autocorrelation between the residuals as seen by the lag plots for lag 1 to 4 and in the acf plot from 1-10.
+
 ## Q2b --- 4 points
 
+```{r}
+x = gw$Year
+v = (gw$Year)^2
+y = gw$Temperature
+n = length(y)
+n.iter = 15
+rho.iter = vector("numeric", n.iter)
+b0.iter = vector("numeric", n.iter)
+b1.iter = vector("numeric", n.iter)
+b2.iter = vector("numeric", n.iter)
+fit1 = lm(y ~ x + v)
+res = fit1$res
+rho.iter[1] = sum(res[1:(n-1)]*res[2:n]) / sum(res^2)
+for(i in 2:n.iter){
+  rho.iter[i] = sum(res[1:(n-1)]*res[2:n]) / sum(res^2)
+  ystar = y[2:n] - rho.iter[i]*y[1:(n-1)]
+  xstar = x[2:n] - rho.iter[i]*x[1:(n-1)]
+  vstar = v[2:n] - rho.iter[i]*v[1:(n-1)]
+  fit2 = lm(ystar ~ xstar + vstar)$coef
+  b0.iter[i] = fit2[1]/(1-rho.iter[i])
+  b1.iter[i] = fit2[2]
+  b2.iter[i] = fit2[3]
+  res = y - b0.iter[i] - b1.iter[i]*x - b2.iter[i]*v
+}
+data.frame(rho.iter,b0.iter,b1.iter,b2.iter)
+```
 
-
+$\beta_0 = 208.96$, $\beta_1 = -0.22129$, $\beta_2 = 0.000058498$, $\rho = 0.59249$
 
 ## Q2c --- 6 points
 
+```{r, warning=FALSE}
+x_star = x[2:n] - rho_hat*x[1:(n-1)]
+v_star = (x[2:n])^2 - rho_hat*(x[1:(n-1)])^2
+y_star = y[2:n] - rho_hat*y[1:(n-1)]
 
+lm_star = lm(y_star ~ x_star + v_star)
+res = lm_star$residuals
+ggplot(mapping=aes(x=x_star,y=res)) + 
+  geom_line() + geom_point()+
+  labs(x='Year',y='Raw Residuals',title = 'time plot') + 
+  geom_hline(yintercept = 0)
+runs.test(factor(res > 0))
+n = length(y_star)
+for (k in c(1:4)) {
+  print(ggplot(mapping=aes(x=res[(k+1):n],y=res[1:(n-k)])) + 
+    geom_line() + geom_point() +
+    labs(title = paste('lag',k)) + 
+    geom_smooth(method='lm'))
+}
+acf(res)
+```
+
+We conclude from these tests that there is no evidence of autocorrelation.
 
 # Question 3
 
@@ -128,7 +197,27 @@ skincancer = read.table("http://www.stat.uchicago.edu/~yibi/s224/data/skincancer
 model2 = lm(sqrt(Melanoma) ~ Year, data=skincancer)
 ```
 
+```{r, warning=FALSE}
+x=skincancer$Year
+y=sqrt(skincancer$Melanoma)
+res = model2$residuals
+ggplot(mapping=aes(x=skincancer$Year,y=res)) + 
+  geom_line() + geom_point()+
+  labs(x='Year',y='Raw Residuals',title = 'time plot') + 
+  geom_hline(yintercept = 0)
+runs.test(factor(res > 0))
+n = length(y)
 
+for (k in c(1:8)) {
+  print(ggplot(mapping=aes(x=res[(k+1):n],y=res[1:(n-k)])) + 
+    geom_line() + geom_point() +
+    labs(title = paste('lag',k)) + 
+    geom_smooth(method='lm'))
+}
+acf(res)
+```
+
+The time plot shows some evidence of runs, while the runs test fails to reject at the 5% significance level with p=0.14, indicating some potential autocorrelation. The lag-k plots appear to be showing some evidence of autocorrelation while the acf plot shows weak evidence for autocorrelation.
 
 ## Q3b --- 6 points
 
@@ -144,8 +233,26 @@ $$
 model3 = lm(sqrt(Melanoma[3:37]) ~ Year[3:37] + sqrt(Sunspot[3:37]) +
               sqrt(Sunspot[2:36]) + sqrt(Sunspot[1:35]), data=skincancer)
 ```
+```{r, warning=FALSE}
+x=skincancer$Year[3:37]
+res = model3$residuals
+ggplot(mapping=aes(x=x,y=res)) + 
+  geom_line() + geom_point()+
+  labs(x='Year',y='Raw Residuals',title = 'time plot') + 
+  geom_hline(yintercept = 0)
+runs.test(factor(res > 0))
+n = length(x)
 
+for (k in c(1:8)) {
+  print(ggplot(mapping=aes(x=res[(k+1):n],y=res[1:(n-k)])) + 
+    geom_line() + geom_point() +
+    labs(title = paste('lag',k)) + 
+    geom_smooth(method='lm'))
+}
+acf(res)
+```
 
+Now the tests reveal virtually no evidence of autocorrelation.
 
 # Question 4
 
@@ -171,7 +278,10 @@ panel.cor <- function(x, y, digits = 3, prefix = "", cex.cor, ...)
 }
 pairs(log(V)~log(K)+log(L)+YEAR, data=food,
       gap=0,oma=c(2,2,2,2), lower.panel = panel.cor)
+vif(lmfood)
 ```
+
+From the pairwise scatterplots and the VIFs we see that labor and year are collinear (VIF > 10 and nearly -1 correlation). 
 
 ## Q4b --- 3 points
 
