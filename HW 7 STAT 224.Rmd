@@ -25,7 +25,7 @@ options(show.signif.stars = FALSE) # Show no stars for significance tests
 http://www.stat.uchicago.edu/~yibi/s224/data/P229-30.txt
 
 ```{r}
-stock = read.table("P229-30.txt", header=T)
+stock = read.table("http://www.stat.uchicago.edu/~yibi/s224/data/P229-30.txt", header=T)
 ```
 
 ## Q1a --- 4 points
@@ -34,9 +34,45 @@ stock = read.table("P229-30.txt", header=T)
 stock1 = lm(DJIA ~ Day, data=stock)
 ```
 
+```{r}
+x = stock$Day
+y = stock$DJIA
+n = length(y)
+n.iter = 15
+rho.iter = vector("numeric", n.iter)
+b0.iter = vector("numeric", n.iter)
+b1.iter = vector("numeric", n.iter)
+fit1 = lm(y ~ x)
+res = fit1$res
+rho.iter[1] = sum(res[1:(n-1)]*res[2:n]) / sum(res^2)
+for(i in 2:n.iter){
+  rho.iter[i] = sum(res[1:(n-1)]*res[2:n]) / sum(res^2)
+  ystar = y[2:n] - rho.iter[i]*y[1:(n-1)]
+  xstar = x[2:n] - rho.iter[i]*x[1:(n-1)]
+  fit2 = lm(ystar ~ xstar)$coef
+  b0.iter[i] = fit2[1]/(1-rho.iter[i])
+  b1.iter[i] = fit2[2]
+  res = y - b0.iter[i] - b1.iter[i]*x
+}
+data.frame(rho.iter,b0.iter,b1.iter)
+```
+
+$\beta_0 = 5209.5$, $\beta_1 = 4.2653$, $\rho = 0.97166$
+
 ## Q1b --- 2 points
 
+```{r}
+x = stock$Day
+y = stock$DJIA
+n = length(y)
+rho_hat = 0.97166
+x_star = x[2:n] - rho_hat*x[1:(n-1)]
+y_star = y[2:n] - rho_hat*y[1:(n-1)]
 
+ggplot(mapping = aes(x=x_star,y=y_star)) +
+  geom_point() +
+  labs(x='x star',y='y star', title = 'Checking Model Assumptions')
+```
 
 ## Q1c --- 6 points
 
@@ -51,7 +87,7 @@ stock1 = lm(DJIA ~ Day, data=stock)
 http://www.stat.uchicago.edu/~yibi/s224/data/globalwarm.txt
 
 ```{r, message=FALSE, fig.width=6, fig.height=2, out.width='100%'}
-gw = read.table("globalwarm.txt", header=T)
+gw = read.table("http://www.stat.uchicago.edu/~yibi/s224/data/globalwarm.txt", header=T)
 ```
 
 ```{r}
@@ -83,7 +119,7 @@ http://www.stat.uchicago.edu/~yibi/s224/data/skincancer.txt
 
 
 ```{r}
-skincancer = read.table("skincancer.txt", header=T)
+skincancer = read.table("http://www.stat.uchicago.edu/~yibi/s224/data/skincancer.txt", header=T)
 ```
 
 ## Q3a --- 6 points
@@ -116,7 +152,7 @@ model3 = lm(sqrt(Melanoma[3:37]) ~ Year[3:37] + sqrt(Sunspot[3:37]) +
 http://www.stat.uchicago.edu/~yibi/s224/data/food.txt
 
 ```{r}
-food = read.table("food.txt", h = T)
+food = read.table("http://www.stat.uchicago.edu/~yibi/s224/data/food.txt", h = T)
 ```
 
 ## Q4a --- 3 points
@@ -148,10 +184,10 @@ summary(lm(log(V)~log(K)+YEAR, data=food))$coef
 
 # Question 5
 
-http://www.stat.uchicago.edu/~yibi/s224/data/fevdata.txt,
+http://www.stat.uchicago.edu/~yibi/s224/data/fevdata.txt
 
 ```{r}
-fevdata = read.table("fevdata.txt", header = TRUE)
+fevdata = read.table("http://www.stat.uchicago.edu/~yibi/s224/data/fevdata.txt", header = TRUE)
 fevdata$sex = factor(fevdata$sex, labels=c("Female","Male"))
 fevdata$smoke = factor(fevdata$smoke, labels=c("Nonsmoker","Smoker"))
 ```
