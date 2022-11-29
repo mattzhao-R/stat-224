@@ -291,6 +291,7 @@ summary(lm(log(V)~log(K)+log(L), data=food))$coef
 summary(lm(log(V)~log(K)+YEAR, data=food))$coef
 ```
 
+YEAR becomes significant at the 5% level when L is removed from the model while L becomes significant when YEAR is removed from the model. I do not believe there was technological development in the food sector since its coefficient is not significant in any model. We can conclude that increasing labor input would lead to decrease in the output based on the second model.
 
 # Question 5
 
@@ -311,7 +312,15 @@ mod2 = lm(log(fev) ~ ht + I(ht^2), data=m.nonsmokers)
 summary(mod1)$coef
 summary(mod2)$coef
 ```
+```{r}
+vif(mod2)
+ggplot(data = m.nonsmokers, aes(x=ht,y=ht^2)) +
+  geom_point() + 
+  labs(x='Height',y='Height^2') + 
+  geom_smooth(method='lm')
+```
 
+This happens because ht and ht^2 are collinear (VIF >>> 10 and plot shows they are nearly exactly linearly related).
 
 ## Q5b --- 2 points
 
@@ -320,3 +329,12 @@ summary(mod2)$coef
 mod3 = lm(log(fev) ~ ht + I((ht-60)^2), data=m.nonsmokers)
 summary(mod3)$coef
 ```
+```{r}
+vif(mod3)
+ggplot(data = m.nonsmokers, aes(x=ht,y=(ht-60)^2)) +
+  geom_point() + 
+  labs(x='Height',y='Height^2') + 
+  geom_smooth(method='lm')
+```
+
+Now there is no collinearity between the two as evidenced by a small VIF and the graph shown.
