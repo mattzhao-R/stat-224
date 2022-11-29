@@ -325,7 +325,7 @@ This happens because ht and ht^2 are collinear (VIF >>> 10 and plot shows they a
 ## Q5b --- 2 points
 
 
-```{r, eval=FALSE}
+```{r}
 mod3 = lm(log(fev) ~ ht + I((ht-60)^2), data=m.nonsmokers)
 summary(mod3)$coef
 ```
