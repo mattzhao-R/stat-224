@@ -91,6 +91,8 @@ durbinWatsonTest(lm_star)
 acf(lm_star$residuals)
 ```
 
+We conclude that the residuals do not exhibit any autocorrelation.
+
 ## Q1d --- 3 points
 
 We should use lm(ystar ~ xstar) since this model does not violate any SLR assumptions compared to the lm(DJIA ~ Day) model as we saw in HW 6. 
@@ -337,4 +339,4 @@ ggplot(data = m.nonsmokers, aes(x=ht,y=(ht-60)^2)) +
   geom_smooth(method='lm')
 ```
 
-Now there is no collinearity between the two as evidenced by a small VIF and the graph shown.
+Now there is no collinearity between the two as evidenced by a small VIF and the graph shown. It is different from Q5b because the covariates are no longer collinear/linear combinations of each other.
